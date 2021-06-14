@@ -49,13 +49,13 @@ for (i in 1:38) {
   get_goalierec <- GET(goalierec_url)
   txt_goalierec <- content(get_goalierec, "text", encoding = "UTF-8")
   json_goalierec <- fromJSON(txt_goalierec, flatten = TRUE)
-  if (i == 1) {GoalieRecords <- as.data.frame(json_goalierec)} else {GoalieRecords <- rbind(GoalieRecords, as.data.frame(json_goalierec))}
+  if (i == 1) {GoaliePull <- as.data.frame(json_goalierec)} else {GoaliePull <- rbind(GoaliePull, as.data.frame(json_goalierec))}
 }
 
-GoalieRecords <- GoalieRecords %>% mutate(Win.Percentage = data.wins / data.gamesPlayed)
+GoalieRecords <- GoaliePull %>% mutate(Win.Percentage = data.wins / data.gamesPlayed)
 
 g1 <- ggplot(GoalieRecords, aes(x = Win.Percentage, , y = ..density..))
-g1 + geom_histogram(color = "white", fill = "#666666", bins = 35) + geom_density(color = "blue") + labs(title = "Histogram for Win Percentage")
+g1 + geom_histogram(color = "white", fill = "#666666", bins = 35) + geom_density(color = "blue") + labs(title = "Histogram for Goalie Win Percentage")
 
 ```
 
@@ -73,8 +73,8 @@ Now that we have removed players with under 20 games, let's look at a histogram 
 ```{r goalierec3, echo = FALSE, warnings = FALSE, messages = FALSE}
 GoalieRecords <- filter(GoalieRecords, data.gamesPlayed >=20)
 
-g2 <- ggplot(GoalieRecords, aes(x = data.gamesPlayed, , y = ..density..))
-g2 + geom_histogram(color = "white", fill = "#666666", bins = 35) + geom_density(color = "blue") + labs(title = "Histogram for Games Played")
+g3 <- ggplot(GoalieRecords, aes(x = data.gamesPlayed, , y = ..density..))
+g3 + geom_histogram(color = "white", fill = "#666666", bins = 35) + geom_density(color = "blue") + labs(title = "Histogram for Games Played") + xlab("Games Played")
 ```
 
 ### Scatterplot
@@ -100,8 +100,8 @@ GoalieRecords <- mutate(GoalieRecords, Who.Stands.Out = ifelse(Win.Percentage ==
 
 
 
-g3 <- ggplot(GoalieRecords, aes(x = data.gamesPlayed, y = Win.Percentage, color = Who.Stands.Out))
-g3 + geom_point() + labs(title = "Goalie Win Percentage by Career Games Played") + xlab("Games Played") + ylab("Win Percentage") + scale_color_manual(values=c("grey60", "green3", "firebrick3", "darkorange2"))
+g4 <- ggplot(GoalieRecords, aes(x = data.gamesPlayed, y = Win.Percentage, color = Who.Stands.Out))
+g4 + geom_point() + labs(title = "Goalie Win Percentage by Career Games Played") + xlab("Games Played") + ylab("Win Percentage") + scale_color_manual(values=c("grey60", "green3", "firebrick3", "darkorange2"))
 
 BiggestLoser <- paste0("The goalie with the most losses is ", Loser[1,1]," " , Loser[1,2], " with ", toString(MostLosses), ".")
 
@@ -129,8 +129,8 @@ The data has an interesting statistic that might be worth looking at: most goals
 Keeping with the 20 game minimum, we'll start with a histogram:
 
 ```{r goalierec5, echo = FALSE, warnings = FALSE, messages = FALSE}
-g2 <- ggplot(GoalieRecords, aes(x = data.mostGoalsAgainstOneGame, , y = ..density..))
-g2 + geom_histogram(color = "white", fill = "#666666", bins = 35) + labs(title = "Histogram for Single Game Goals Scored Against")
+g5 <- ggplot(GoalieRecords, aes(x = data.mostGoalsAgainstOneGame, , y = ..density..))
+g5 + geom_histogram(color = "white", fill = "#666666", bins = 35) + labs(title = "Histogram for Single Game Goals Scored Against") + xlab("Most Goals Scored Against in a Single Game")
 ```
 
 It seems that there are very few where the number of goals is over 11 or under 5, so let's create a set of categorical variables that denote most goals scored against with categories "<=5", "6", "7",...,"10", "11+". 
@@ -180,15 +180,60 @@ kable(Defense, caption = "Summaries Statistics for Win Percentage by Career Most
 We can use boxplots to visually see the distribution of win percentage by each of these categories.
 
 ```{r goalierec7, echo = FALSE, warnings = FALSE, messages = FALSE}
-g2 <- ggplot(ScoredAgainst, aes(x = Most.Scored.Against, y = Win.Percentage, color = Most.Scored.Against))
-g2 + geom_boxplot(fill = "white", colour = "black") + labs(title = "Boxplots of Win Percentage by Most Goals Scored Against") + geom_point(position = "jitter")
+g6 <- ggplot(ScoredAgainst, aes(x = Most.Scored.Against, y = Win.Percentage, color = Most.Scored.Against))
+g6 + geom_boxplot(fill = "white", colour = "black") + labs(title = "Boxplots of Win Percentage by Most Goals Scored Against") + geom_point(position = "jitter") + geom_smooth(formula = (y ~ x), method = lm, se = FALSE, aes(group=1), color = "black")
 ```
 
 Interestingly, it appears that goalies with larger max number of goals scored against them in a game are a little more likely to have lower career winning percentages.
 
+## Player Names
+
+Hockey is a sport that is very popular in North America, particularly Canada. The names of players is a topic that is interesting because it may differ significantly from the name distribution of the general population
+
+```{r names1, echo = FALSE, warnings = FALSE, messages = FALSE}
+#There are 38 team IDs
+for (i in 1:38) {
+  skaterrec_url <- paste0(base_url, "/franchise-skater-records?cayenneExp=franchiseId=",toString(i))
+  get_skaterrec <- GET(skaterrec_url)
+  txt_skaterrec <- content(get_skaterrec, "text", encoding = "UTF-8")
+  json_skaterrec <- fromJSON(txt_skaterrec, flatten = TRUE)
+  if (i == 1) {SkaterPull <- as.data.frame(json_skaterrec)} else {SkaterPull <- rbind(SkaterPull, as.data.frame(json_skaterrec))}
+}
+
+PlayerData <- rbind(select(GoaliePull, data.firstName, data.lastName), select(SkaterPull, data.firstName, data.lastName))
+
+FirstNames1 <- count(PlayerData, data.firstName) %>% arrange(desc(n)) %>% head(10) %>% rename(First.Name = data.firstName)
+kable(FirstNames1, caption = "10 Most Common First Names") %>% kable_styling()
+
+```
+
+The number of last names might be more interesting since that may reveal more information about nationality than first names.
+
+```{r names2, echo = FALSE, warnings = FALSE, messages = FALSE}
+
+LastNames1 <- count(PlayerData, data.lastName) %>% arrange(desc(n)) %>% head(10) %>% rename(Last.Name =data.lastName)
+kable(LastNames1, caption = "10 Most Common Last Names") %>% kable_styling()
+
+```
+
+Let's put the top 40 first names and the top 40 last names into bar charts and see what the relative frequencies are. We will remove the remainder to make the charts visible.
+
+```{r names3, echo = FALSE, warnings = FALSE, messages = FALSE}
+
+FirstNames2 <- count(PlayerData, data.firstName) %>% arrange(desc(n)) %>% head(40)  %>% rename(First.Name = data.firstName) 
+#%>% mutate(name=factor(name, levels=name))
+LastNames2 <- count(PlayerData, data.lastName) %>% arrange(desc(n)) %>% head(40)  %>% rename(Last.Name =data.lastName)
+
+g7 <- ggplot(FirstNames2, aes(x = reorder(First.Name, desc(n))))
+g7 + geom_bar(aes(weight = n), color = "white", fill = "darkolivegreen") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + xlab("Top 40 First Names") + ylab("Count")
+
+g8 <- ggplot(LastNames2, aes(x = reorder(Last.Name, desc(n))))
+g8 + geom_bar(aes(weight = n), color = "white", fill = "darkolivegreen") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + xlab("Top 40 Last Names") + ylab("Count")
+```
+
 ## Bonus: Team Reg. Season Win % by Playoff Outcome
 
-This is just because I was curious and wanted to explore more of the data.
+This is just because I was curious and wanted to explore more of the data. The endpoint wasn't in the list, but I found it in the API documentation and it had interesting data.
 
 This is a series of boxplots showing the distribution of win percentages by the furthest point a team got in the playoffs. I would have expected it to be increasing monotonically, but playoff series being what they are, it flattens out (declines maybe?) after the first second because regular season success can be undone by small sample playoff randomness! I guess the *best* team doesn't always win the championship.
 
@@ -208,8 +253,8 @@ RegSeason <- TeamData %>% mutate(Win.Percentage = data.wins / data.gamesPlayed) 
 Playoffs <- TeamData %>% mutate(Win.Percentage = data.wins / data.gamesPlayed) %>% filter(data.gamesPlayed <= 30)
 
 
-g1 <- ggplot(RegSeason, aes(x = Playoff.Series, y = Win.Percentage, color = Playoff.Series))
-g1 + geom_boxplot(fill = "white", colour = "black") + geom_point(position = "jitter") + labs(title = "Win Percentage by Playoff Outcome, 2014 - Present") + scale_x_discrete(labels = function(Playoff.Series) str_wrap(Playoff.Series, width = 10))
+g9 <- ggplot(RegSeason, aes(x = Playoff.Series, y = Win.Percentage, color = Playoff.Series))
+g9 + geom_boxplot(fill = "white", colour = "black") + geom_point(position = "jitter") + labs(title = "Win Percentage by Playoff Outcome, 2014 - Present") + scale_x_discrete(labels = function(Playoff.Series) str_wrap(Playoff.Series, width = 10))
 ```
 
 
