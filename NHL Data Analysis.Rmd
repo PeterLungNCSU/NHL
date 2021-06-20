@@ -2,34 +2,218 @@
 title: "NHL Hockey: ST 558 Project 1"
 author: "Peter Lung"
 date: "6/12/2021"
-html_document: 
-  toc: true
+output:
+    html_document:
+      toc: true
+      toc_depth: 3
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-base_url <- "https://records.nhl.com/site/api"
+team <- "Toronto Maple Leafs"
+team_id <- 5
+```
+
+# Required Libraries
+
+```{r libraries, messages = FALSE, warnings = FALSE}
 library(httr)
+library(stringr)
 library(jsonlite)
 library(ggplot2)
-library(dplyr)
-library(stringr)
+library(rmarkdown)
+library(DT)
 library(kableExtra)
+library(dplyr)
 ```
 
+# Functions for pulling data
 
-```{r attendance, include=FALSE}
-att_url <- paste0(base_url, "/attendance")
-get_att <- GET(att_url)
-txt_att <- content(get_att, "text")
-json_att <- fromJSON(txt_att, flatten = TRUE)
+The hockey data I will be going over is accessible via the following logic which returns the table of interest, subsetted by the team of interest (if there is one). There are six records tables to choose from as well as one stats table to choose from for pulling the data.
++ Franchise table: Contains general information on each historical NHL franchise
++ Team totals table: Contains some basic win/loss information for each franchise
++ Season records
++ Goalie records
++ Skater records
++ Recent team IDs
+
+```{r functions}
+#base url
+base_url <- "https://records.nhl.com/site/api"
+
+# Mapping team IDs to team names
+Teams <- c("Montréal Canadiens", "Montreal Wanderers", "St. Louis Eagles", "Hamilton Tigers", "Toronto Maple Leafs", "Boston Bruins", "Montreal Maroons", "Brooklyn Americans", "Philadelphia Quakers", "New York Rangers", "Chicago Blackhawks", "Detroit Red Wings", "Cleveland Barons", "Los Angeles Kings", "Dallas Stars", "Philadelphia Flyers", "Pittsburgh Penguins", "St. Louis Blues", "Buffalo Sabres", "Vancouver Canucks", "Calgary Flames", "New York Islanders", "New Jersey Devils", "Washington Capitals", "Edmonton Oilers", "Carolina Hurricanes ", "Colorado Avalanche", "Arizona Coyotes", "San Jose Sharks", "Ottawa Senators ", "Tampa Bay Lightning", "Anaheim Ducks", "Florida Panthers", "Nashville Predators", "Winnipeg Jets", "Columbus Blue Jackets", "Minnesota Wild", "Vegas Golden Knights")
+ID <- (1:38)
+TeamMap <- data.frame(Teams, ID)
+
+#franchise function
+franchise <- function() {
+  url <- paste0(base_url, "/franchise")
+  get <- GET(url)
+  txt <- content(get, "text", encoding = "UTF-8")
+  json <- fromJSON(txt, flatten = TRUE)
+  franch <- as.data.frame(json)
+  return(franch)
+}
+
+#team totals function
+team_tot <- function() {
+  url <- paste0(base_url, "/franchise-team-totals")
+  get <- GET(url)
+  txt <- content(get, "text", encoding = "UTF-8")
+  json <- fromJSON(txt, flatten = TRUE)
+  team_tot <- as.data.frame(json)
+  return(team_tot)
+}
+
+#season records function
+season_rec <- function(team = "", team_id) {
+  if (team == "all") {
+    for (i in 1:38) {
+      url <- paste0(base_url, "/franchise-season-records?cayenneExp=franchiseId==",toString(i))
+      get <- GET(url)
+      txt <- content(get, "text", encoding = "UTF-8")
+      json <- fromJSON(txt, flatten = TRUE)
+      if (i == 1) {SeasonPull <- as.data.frame(json)} else {SeasonPull <- rbind(SeasonPull, ... = as.data.frame(json))}}}
+  else if (team == "") {
+    url <- paste0(base_url, "/franchise-season-records?cayenneExp=franchiseId=",toString(team_id))
+    get <- GET(url)
+    txt <- content(get, "text", encoding = "UTF-8")
+    json <- fromJSON(txt, flatten = TRUE)
+    SeasonPull <- as.data.frame(json)}
+  else {
+    TeamName <- TeamMap %>% filter(Teams == team)
+    j <- TeamName[1,2]
+    url <- paste0(base_url, "/franchise-season-records?cayenneExp=franchiseId=",toString(j))
+    get <- GET(url)
+    txt <- content(get, "text", encoding = "UTF-8")
+    json <- fromJSON(txt, flatten = TRUE)
+    SeasonPull <- as.data.frame(json)}
+  return(SeasonPull)
+}
+
+
+#goalie records totals function
+goalie <- function(team = "", team_id) {
+  if (team == "all") {
+    for (i in 1:38) {
+      url <- paste0(base_url, "/franchise-goalie-records?cayenneExp=franchiseId=",toString(i))
+      get <- GET(goalierec_url)
+      txt <- content(get, "text", encoding = "UTF-8")
+      json <- fromJSON(txt, flatten = TRUE)
+      if (i == 1) {GoaliePull <- as.data.frame(json)} else {GoaliePull <- rbind(GoaliePull, ... = as.data.frame(json))}}}
+  else if (team == "") {
+    url <- paste0(base_url, "/franchise-goalie-records?cayenneExp=franchiseId=",toString(team_id))
+    get <- GET(url)
+    txt <- content(get, "text", encoding = "UTF-8")
+    json <- fromJSON(txt, flatten = TRUE)
+    GoaliePull <- as.data.frame(json)}
+  else {
+    TeamName <- TeamMap %>% filter(Teams == team)
+    j <- TeamName[1,2]
+    url <- paste0(base_url, "/franchise-goalie-records?cayenneExp=franchiseId=",toString(j))
+    get <- GET(url)
+    txt <- content(get, "text", encoding = "UTF-8")
+    json <- fromJSON(txt, flatten = TRUE)
+    GoaliePull <- as.data.frame(json)}
+  return(GoaliePull)
+}
+
+skater <- function(team = "", team_id) {
+  if (team == "all") {
+    for (i in 1:38) {
+      url <- paste0(base_url, "/franchise-skater-records?cayenneExp=franchiseId=",toString(i))
+      get <- GET(url)
+      txt <- content(get, "text", encoding = "UTF-8")
+      json <- fromJSON(txt, flatten = TRUE)
+      if (i == 1) {SkaterPull <- as.data.frame(json)} else {SkaterPull <- rbind(SkaterPull, ... = as.data.frame(json))}}}
+  else if (team == "") {
+    url <- paste0(base_url, "/franchise-skater-records?cayenneExp=franchiseId=",toString(team_id))
+    get <- GET(url)
+    txt <- content(get, "text", encoding = "UTF-8")
+    json <- fromJSON(txt, flatten = TRUE)
+    SkaterPull <- as.data.frame(json)}
+  else {
+    TeamName <- TeamMap %>% filter(Teams == team)
+    j <- TeamName[1,2]
+    url <- paste0(base_url, "/franchise-skater-records?cayenneExp=franchiseId=",toString(j))
+    get <- GET(url)
+    txt <- content(get, "text", encoding = "UTF-8")
+    json <- fromJSON(txt, flatten = TRUE)
+    SkaterPull <- as.data.frame(json)}
+  return(SkaterPull)
+}
+
+recent <- function(team = "", team_id) {
+  if (team == "all") {
+    for (i in 1:38) {
+      url <- paste0(base_url, "/franchise-detail?cayenneExp=mostRecentTeamId=",toString(i))
+      get <- GET(url)
+      txt <- content(get, "text", encoding = "UTF-8")
+      json <- fromJSON(txt, flatten = TRUE)
+      if (i == 1) {RecentPull <- as.data.frame(json)} else {RecentPull <- rbind(RecentPull, ... = as.data.frame(json))}}}
+  else if (team == "") {
+    url <- paste0(base_url, "/franchise-detail?cayenneExp=mostRecentTeamId=",toString(team_id))
+    get <- GET(url)
+    txt <- content(get, "text", encoding = "UTF-8")
+    json <- fromJSON(txt, flatten = TRUE)
+    RecentPull <- as.data.frame(json)}
+  else {
+    TeamName <- TeamMap %>% filter(Teams == team)
+    j <- TeamName[1,2]
+    url <- paste0(base_url, "/franchise-detail?cayenneExp=mostRecentTeamId=",toString(j))
+    get <- GET(url)
+    txt <- content(get, "text", encoding = "UTF-8")
+    json <- fromJSON(txt, flatten = TRUE)
+    RecentPull <- as.data.frame(json)}
+  return(SkaterPull)
+}
+
 ```
 
-```{r teamtot, include=FALSE}
-teamtot_url <- paste0(base_url, "/franchise-team-totals")
-get_teamtot <- GET(teamtot_url)
-txt_teamtot <- content(get_teamtot, "text")
-json_teamtot <- fromJSON(txt_teamtot, flatten = TRUE)
+The above functions return the individual table of interest, but the following wrapper function will be the only function needed to pull any table from above. Example syntax is shown in the latter sections. You will need to specify a table of interest as well as either a team or team_id value if the table contains team-specific data.
+
+```{r wrapper}
+nhl <- function(table,...) {
+  if (table == "franchise") {df <- franchise()}
+  else if (table == "team_tot") {df <- team_tot()}
+  else if (table == "season_rec") {df <- season_rect(...)}
+  else if (table == "goalie") {df <- goalie(...)}
+  else if (table == "skater") {df <- skater(...)}
+  else if (table == "recent") {df <- recent(...)}
+  else {df <- NULL}
+  return(df)
+}
+```
+
+# NHL Tables 
+
+Let's take a look at how the nhl() function works for the first two datasets. We will create html tables to view this data.
+
+## Franchises
+
+```{r franchise, echo=FALSE}
+franch <- nhl("franchise")
+franch <- franch %>% select(data.fullName, data.firstSeasonId, data.lastSeasonId, data.teamAbbrev, data.teamCommonName, data.teamPlaceName) %>% rename("Team" = "data.fullName", "First Season" = "data.firstSeasonId", "Last Season" = "data.lastSeasonId", "Abbrev" = "data.teamAbbrev", "Common Name" = "data.teamCommonName", "City" = "data.teamPlaceName")
+
+datatable(franch, extensions = c('FixedColumns',"FixedHeader"), options = list(scrollX = FALSE, paging=TRUE, fixedHeader=TRUE))
+```
+
+## Team Totals
+
+```{r teamtot1, echo=FALSE}
+TeamTotals <- nhl("team_tot")
+TeamTotals <- TeamTotals %>% filter(data.gameTypeId == '2') %>% select(data.teamName, data.firstSeasonId, data.gamesPlayed, data.goalsFor, data.goalsAgainst, data.homeWins, data.homeLosses, data.homeTies, data.roadWins, data.roadLosses, data.roadTies) %>% rename("Team" = "data.teamName", "First Season" = "data.firstSeasonId", "Games" = "data.gamesPlayed", "Goals Scored" = "data.goalsFor", "Goals Scored Against" = "data.goalsAgainst", "Home Wins" = "data.homeWins", "Home Losses" = "data.homeLosses", "Home Ties" = "data.homeTies", "Road Wins" = "data.roadWins", "Road Losses" = "data.roadLosses", "Road Ties" = "data.roadTies")
+
+datatable(TeamTotals, extensions = c('FixedColumns',"FixedHeader"), options = list(scrollX = FALSE, paging=TRUE, fixedHeader=TRUE))
+```
+
+## Franchise Season Records
+
+```{r teamtot2, echo=FALSE}
+seasrec <- nhl(season_rec(team = "all"))
+
+datatable(seasrec, extensions = c('FixedColumns',"FixedHeader"), options = list(scrollX = FALSE, paging=TRUE, fixedHeader=TRUE))
 ```
 
 # NHL Data Analysis 
@@ -40,7 +224,7 @@ Do teams keep under-performing goalies around for a long time? I was curious to 
 
 ### Histograms
 
-Before we jump into the analysis, let's do some data investigation. We will start with histograms of the variables we are interested in.
+Before we jump into the analysis, let's do some data investigation. We will start with histograms of the variables we are interested in. The following is a histogram with all teams included:
 
 ```{r goalierec1, echo = FALSE, warnings = FALSE, messages = FALSE}
 #There are 38 team IDs
@@ -55,26 +239,38 @@ for (i in 1:38) {
 GoalieRecords <- GoaliePull %>% mutate(Win.Percentage = data.wins / data.gamesPlayed)
 
 g1 <- ggplot(GoalieRecords, aes(x = Win.Percentage, , y = ..density..))
-g1 + geom_histogram(color = "white", fill = "#666666", bins = 35) + geom_density(color = "blue") + labs(title = "Histogram for Goalie Win Percentage")
+g1 + geom_histogram(color = "white", fill = "darkgoldenrod1", bins = 35) + geom_density(color = "blue") + labs(title = "Histogram for Goalie Win Percentage")
 
 ```
 
-There are several players with a win percentage of 0% and a few with 100%. This is because many of these players have only played in a few games. I think it makes sense to filter out goalies who have played less than 20 games so that we have appropraite sample sizes. Removing those players and re-creating the histogram:
+There are several players with a win percentage of 0% and a few with 100%. This is because many of these players have only played in a few games. I think it makes sense to filter out goalies who have played less than 20 games so that we have appropriate sample sizes. Removing those players and re-creating the histogram:
 
 ```{r goalierec2, echo = FALSE, warnings = FALSE, messages = FALSE}
 GoalieRecords <- filter(GoalieRecords, data.gamesPlayed >=20)
 
 g2 <- ggplot(GoalieRecords, aes(x = Win.Percentage, , y = ..density..))
-g2 + geom_histogram(color = "white", fill = "#666666", bins = 35) + geom_density(color = "blue") + labs(title = "Histogram for Win Percentage (at least 20 games)")
+g2 + geom_histogram(color = "white", fill = "darkgoldenrod1", bins = 35) + geom_density(color = "blue") + labs(title = "Histogram for Win Percentage (at least 20 games)")
 ```
 
-Now that we have removed players with under 20 games, let's look at a histogram of games played:
+So let's see how that distribution compares to the `r team`.
+
+```{r tgoalierec2, echo = FALSE, warnings = FALSE, messages = FALSE}
+tGoalieRecords <- filter(GoalieRecords, data.franchiseName == team)
+
+t2 <- ggplot(tGoalieRecords, aes(x = Win.Percentage))
+t2 + geom_histogram(color = "white", fill = "darkgoldenrod", bins = 35) + labs(title = paste0("Histogram for Win Percentage (at least 20 games) - ", team))
+```
+
+Now that we have removed players with under 20 games, let's look at a histogram of games played.:
 
 ```{r goalierec3, echo = FALSE, warnings = FALSE, messages = FALSE}
-GoalieRecords <- filter(GoalieRecords, data.gamesPlayed >=20)
-
 g3 <- ggplot(GoalieRecords, aes(x = data.gamesPlayed, , y = ..density..))
-g3 + geom_histogram(color = "white", fill = "#666666", bins = 35) + geom_density(color = "blue") + labs(title = "Histogram for Games Played") + xlab("Games Played")
+g3 + geom_histogram(color = "white", fill = "darkgoldenrod1", bins = 35) + geom_density(color = "blue") + labs(title = "Histogram for Games Played - All Teams") + xlab("Games Played")
+```
+
+```{r tgoalierec3, echo = FALSE, warnings = FALSE, messages = FALSE}
+t3 <- ggplot(tGoalieRecords, aes(x = data.gamesPlayed))
+t3 + geom_histogram(color = "white", fill = "darkgoldenrod", bins = 35) + labs(title = paste0("Histogram for Games Played - ", team)) + xlab("Games Played")
 ```
 
 ### Scatterplot
@@ -101,7 +297,7 @@ GoalieRecords <- mutate(GoalieRecords, Who.Stands.Out = ifelse(Win.Percentage ==
 
 
 g4 <- ggplot(GoalieRecords, aes(x = data.gamesPlayed, y = Win.Percentage, color = Who.Stands.Out))
-g4 + geom_point() + labs(title = "Goalie Win Percentage by Career Games Played") + xlab("Games Played") + ylab("Win Percentage") + scale_color_manual(values=c("grey60", "green3", "firebrick3", "darkorange2"))
+g4 + geom_point() + labs(title = "Goalie Win Percentage by Career Games Played - All Teams") + xlab("Games Played") + ylab("Win Percentage") + scale_color_manual(values=c("grey60", "green3", "firebrick3", "darkorange2"))
 
 BiggestLoser <- paste0("The goalie with the most losses is ", Loser[1,1]," " , Loser[1,2], " with ", toString(MostLosses), ".")
 
@@ -122,6 +318,43 @@ Well, it looks like if you are really a loser, they don't keep you in the goal f
 
 Total losses are probably more related to longevity than an extended poor performance. Having a zero or near-zero win percentage in 40+ games seems to be quite an anomaly. Even highly likely events can have a non-zero probability of occurring.
 
+Compare with the scatterplot for the  `r team`.
+
+```{r tgoalierec4, echo = FALSE, warnings = FALSE, messages = FALSE}
+#Find out who had the most losses
+tMostLosses <- max(tGoalieRecords$data.losses)
+tLoser <- filter(tGoalieRecords, data.losses == tMostLosses) %>% select(data.firstName, data.lastName, data.gamesPlayed)  %>% filter(data.gamesPlayed == max(data.gamesPlayed))
+
+#Lowest winning percentage in over 500 games
+tFrustratedPct <- min(filter(tGoalieRecords, data.gamesPlayed > 200) %>% select(Win.Percentage))
+tFrustrated <- filter(tGoalieRecords, data.gamesPlayed > 200) %>% filter(Win.Percentage == min(tFrustratedPct))  %>% select(data.firstName, data.lastName, data.gamesPlayed)  %>% filter(data.gamesPlayed == max(data.gamesPlayed))
+
+# Lowest winning percentage in the sample set (get max games played if there's a tie)
+tLowestPct <- min(tGoalieRecords$Win.Percentage)
+tLowest <- filter(tGoalieRecords, Win.Percentage == tLowestPct)  %>% select(data.firstName, data.lastName, data.gamesPlayed) %>% filter(data.gamesPlayed == max(data.gamesPlayed))
+
+tGoalieRecords <- mutate(tGoalieRecords, Who.Stands.Out = ifelse(Win.Percentage == tLowestPct , paste0(data.firstName, " ", data.lastName), ifelse(Win.Percentage == tFrustratedPct, paste0(data.firstName, " ", data.lastName), ifelse(data.losses == tMostLosses, paste0(data.firstName, " ", data.lastName), "Everybody Else"))))
+tGoalieRecords$Who.Stands.Out <- factor(tGoalieRecords$Who.Stands.Out, levels = c("Everybody Else", paste0(tLoser[1,1]," " , tLoser[1,2]), paste0(tFrustrated[1,1]," ", tFrustrated[1,2]), paste0(tLowest[1,1]," ", tLowest[1,2])))
+
+
+t4 <- ggplot(tGoalieRecords, aes(x = data.gamesPlayed, y = Win.Percentage, color = Who.Stands.Out))
+t4 + geom_point() + labs(title = paste0("Goalie Win Percentage by Career Games Played - ", team)) + xlab("Games Played") + ylab("Win Percentage") + scale_color_manual(values=c("black", "green3", "firebrick3", "darkorange2"))
+
+tBiggestLoser <- paste0("The goalie with the most losses for ", team, " is ", tLoser[1,1]," " , tLoser[1,2], " with ", toString(tMostLosses), ".")
+
+tMostFrustrated <- paste0("The goalie with the lowest win percentage for the ", team, " (over 200 games) is ", tFrustrated[1,1]," ", tFrustrated[1,2], " at ", toString(round(100 * tFrustratedPct, 1)),"% in ", toString(tFrustrated[1,3]), " games.")
+
+tLowestRate <- paste0("The goalie with the lowest win percentage for the ", team, " in the whole sample is ", tLowest[1,1]," ", tLowest[1,2], " at ", toString(round(100 * tLowestPct, 1)), "% in ", toString(tLowest[1,3]), " games.")
+```
+
+Since some teams don't have goalies with 500+ games, the parameter is changed to 200 games.
+
+`r tBiggestLoser`
+
+`r tMostFrustrated`
+
+`r tLowestRate`
+
 ### Most Goals Scored Against a Goalie in a Single Game
 
 The data has an interesting statistic that might be worth looking at: most goals scored on a goalie in a single game. It would be unfair to judge a player's career by their worst game, but in the name of data analysis, let's see if there are any relationships there.
@@ -130,7 +363,7 @@ Keeping with the 20 game minimum, we'll start with a histogram:
 
 ```{r goalierec5, echo = FALSE, warnings = FALSE, messages = FALSE}
 g5 <- ggplot(GoalieRecords, aes(x = data.mostGoalsAgainstOneGame, , y = ..density..))
-g5 + geom_histogram(color = "white", fill = "#666666", bins = 35) + labs(title = "Histogram for Single Game Goals Scored Against") + xlab("Most Goals Scored Against in a Single Game")
+g5 + geom_histogram(color = "white", fill = "darkgoldenrod1", bins = 35) + labs(title = "Histogram for Single Game Goals Scored Against - All Teams") + xlab("Most Goals Scored Against in a Single Game")
 ```
 
 It seems that there are very few where the number of goals is over 11 or under 5, so let's create a set of categorical variables that denote most goals scored against with categories "<=5", "6", "7",...,"10", "11+". 
@@ -166,14 +399,40 @@ E <- as.data.frame(t(round(summary(df5$Win.Percentage),3))) %>% rename(Stat = Va
 df6 <- filter(ScoredAgainst, Most.Scored.Against == "11+")
 F <- as.data.frame(t(round(summary(df6$Win.Percentage),3))) %>% rename(Stat = Var2) %>% select(Stat, Freq) %>% rename("11+" = "Freq")
 
+tScoredAgainst <- filter(ScoredAgainst, , data.franchiseName == team)
+
+tdf0 <- filter(tScoredAgainst, Most.Scored.Against == "<6")
+tDefense <- as.data.frame(t(round(summary(tdf0$Win.Percentage),3))) %>% rename(Stat = Var2) %>% select(Stat, Freq)  %>% rename("<6" = "Freq")
+tdf1 <- filter(tScoredAgainst, Most.Scored.Against == "6")
+tA <- as.data.frame(t(round(summary(tdf1$Win.Percentage),3) )) %>% rename(Stat = Var2) %>% select(Stat, Freq) %>% rename("6" = "Freq")
+tdf2 <- filter(tScoredAgainst, Most.Scored.Against == "7")
+tB <- as.data.frame(t(round(summary(tdf2$Win.Percentage),3))) %>% rename(Stat = Var2) %>% select(Stat, Freq) %>% rename("7" = "Freq")
+tdf3 <- filter(tScoredAgainst, Most.Scored.Against == "8")
+tC <- as.data.frame(t(round(summary(tdf3$Win.Percentage),3))) %>% rename(Stat = Var2) %>% select(Stat, Freq) %>% rename("8" = "Freq")
+tdf4 <- filter(tScoredAgainst, Most.Scored.Against == "9")
+tD <- as.data.frame(t(round(summary(tdf4$Win.Percentage),3))) %>% rename(Stat = Var2) %>% select(Stat, Freq) %>% rename("9" = "Freq")
+tdf5 <- filter(tScoredAgainst, Most.Scored.Against == "10")
+tE <- as.data.frame(t(round(summary(tdf5$Win.Percentage),3))) %>% rename(Stat = Var2) %>% select(Stat, Freq) %>% rename("10" = "Freq")
+tdf6 <- filter(tScoredAgainst, Most.Scored.Against == "11+")
+tF <- as.data.frame(t(round(summary(tdf6$Win.Percentage),3))) %>% rename(Stat = Var2) %>% select(Stat, Freq) %>% rename("11+" = "Freq")
+
 Defense <- Defense %>% left_join(A, by = "Stat") %>% left_join(B, by = "Stat") %>% left_join(C, by = "Stat") %>% left_join(D, by = "Stat") %>% left_join(E, by = "Stat") %>% left_join(F, by = "Stat")
+
+tDefense <- tDefense %>% left_join(tA, by = "Stat") %>% left_join(tB, by = "Stat") %>% left_join(tC, by = "Stat") %>% left_join(tD, by = "Stat") %>% left_join(tE, by = "Stat") %>% left_join(tF, by = "Stat")
+
 Defense <- Defense %>% rename(" " = "Stat")
+tDefense <- tDefense %>% rename(" " = "Stat")
+
 sampsize <- as.data.frame(t(c("n", nrow(df0), nrow(df1), nrow(df2), nrow(df3), nrow(df4), nrow(df5), nrow(df6)))) %>% rename(" " = "V1", "<6" = "V2", "6" = "V3", "7" = "V4", "8" = "V5", "9" = "V6", "10" = "V7", "11+" = "V8")
+
+tsampsize <- as.data.frame(t(c("n", nrow(tdf0), nrow(tdf1), nrow(tdf2), nrow(tdf3), nrow(tdf4), nrow(tdf5), nrow(tdf6)))) %>% rename(" " = "V1", "<6" = "V2", "6" = "V3", "7" = "V4", "8" = "V5", "9" = "V6", "10" = "V7", "11+" = "V8")
+
 Defense <- rbind(Defense, sampsize)
-kable(Defense, caption = "Summaries Statistics for Win Percentage by Career Most Goals Scored Against", digits = 3) %>% kable_styling()
+tDefense <- rbind(tDefense, tsampsize)
 
+kable(Defense, caption = "Summaries Statistics for Win Percentage by Career 'Most Goals Scored Against' - All Teams", digits = 3) %>% kable_styling()
 
-
+kable(tDefense, caption = paste0("Summaries Statistics for Win Percentage by Career 'Most Goals Scored Against' - ", team), digits = 3) %>% kable_styling()
 
 ```
 
@@ -184,23 +443,26 @@ g6 <- ggplot(ScoredAgainst, aes(x = Most.Scored.Against, y = Win.Percentage, col
 g6 + geom_boxplot(fill = "white", colour = "black") + labs(title = "Boxplots of Win Percentage by Most Goals Scored Against") + geom_point(position = "jitter") + geom_smooth(formula = (y ~ x), method = lm, se = FALSE, aes(group=1), color = "black")
 ```
 
-Interestingly, it appears that goalies with larger max number of goals scored against them in a game are a little more likely to have lower career winning percentages.
+Interestingly, it appears that goalies with larger max number of goals scored against them in a game are a little more likely to have lower career winning percentages. Let's see if this holds true for `r team`:
+
+```{r tgoalierec7, echo = FALSE, warnings = FALSE, messages = FALSE}
+t6 <- ggplot(tScoredAgainst, aes(Most.Scored.Against, Win.Percentage))
+t6 + geom_point() + geom_smooth(formula = y ~ x, method = lm, se = FALSE, col = "red", aes(group=1)) + labs(title = paste0("Win Percentage by Most Goals Scored Against - ", team)) + xlab("Career Most Goals Scored Against") + ylab("Win Percentage")
+```
 
 ## Player Names
 
-Hockey is a sport that is very popular in North America, particularly Canada. The names of players is a topic that is interesting because it may differ significantly from the name distribution of the general population
+Hockey is a sport that is very popular in North America, particularly Canada. The names of players is a topic that is interesting because it may differ significantly from the name distribution of the general population. What are the most common first and last names for all players that have played hockey for the `r team`?
 
 ```{r names1, echo = FALSE, warnings = FALSE, messages = FALSE}
-#There are 38 team IDs
-for (i in 1:38) {
-  skaterrec_url <- paste0(base_url, "/franchise-skater-records?cayenneExp=franchiseId=",toString(i))
-  get_skaterrec <- GET(skaterrec_url)
-  txt_skaterrec <- content(get_skaterrec, "text", encoding = "UTF-8")
-  json_skaterrec <- fromJSON(txt_skaterrec, flatten = TRUE)
-  if (i == 1) {SkaterPull <- as.data.frame(json_skaterrec)} else {SkaterPull <- rbind(SkaterPull, as.data.frame(json_skaterrec))}
-}
 
-PlayerData <- rbind(select(GoaliePull, data.firstName, data.lastName), select(SkaterPull, data.firstName, data.lastName))
+skaterrec_url <- paste0(base_url, "/franchise-skater-records?cayenneExp=franchiseId=",toString(team_id))
+get_skaterrec <- GET(skaterrec_url)
+txt_skaterrec <- content(get_skaterrec, "text", encoding = "UTF-8")
+json_skaterrec <- fromJSON(txt_skaterrec, flatten = TRUE)
+SkaterPull <- as.data.frame(json_skaterrec)
+
+PlayerData <- rbind(select(filter(GoaliePull, data.franchiseName == team), data.firstName, data.lastName), select(SkaterPull, data.firstName, data.lastName))
 
 FirstNames1 <- count(PlayerData, data.firstName) %>% arrange(desc(n)) %>% head(10) %>% rename(First.Name = data.firstName)
 kable(FirstNames1, caption = "10 Most Common First Names") %>% kable_styling()
@@ -216,22 +478,22 @@ kable(LastNames1, caption = "10 Most Common Last Names") %>% kable_styling()
 
 ```
 
-Let's put the top 40 first names and the top 40 last names into bar charts and see what the relative frequencies are. We will remove the remainder to make the charts visible.
+Let's put the top 20 first names and the top 20 last names into bar charts and see what the relative frequencies are. We will remove the remainder to make the charts visible.
 
 ```{r names3, echo = FALSE, warnings = FALSE, messages = FALSE}
 
-FirstNames2 <- count(PlayerData, data.firstName) %>% arrange(desc(n)) %>% head(40)  %>% rename(First.Name = data.firstName) 
+FirstNames2 <- count(PlayerData, data.firstName) %>% arrange(desc(n)) %>% head(20)  %>% rename(First.Name = data.firstName) 
 #%>% mutate(name=factor(name, levels=name))
-LastNames2 <- count(PlayerData, data.lastName) %>% arrange(desc(n)) %>% head(40)  %>% rename(Last.Name =data.lastName)
+LastNames2 <- count(PlayerData, data.lastName) %>% arrange(desc(n)) %>% head(20)  %>% rename(Last.Name =data.lastName)
 
 g7 <- ggplot(FirstNames2, aes(x = reorder(First.Name, desc(n))))
-g7 + geom_bar(aes(weight = n), color = "white", fill = "darkolivegreen") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + xlab("Top 40 First Names") + ylab("Count")
+g7 + geom_bar(aes(weight = n), color = "white", fill = "darkolivegreen") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + xlab("Top 20 First Names") + ylab("Count")
 
 g8 <- ggplot(LastNames2, aes(x = reorder(Last.Name, desc(n))))
-g8 + geom_bar(aes(weight = n), color = "white", fill = "darkolivegreen") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + xlab("Top 40 Last Names") + ylab("Count")
+g8 + geom_bar(aes(weight = n), color = "white", fill = "darkolivegreen") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + xlab("Top 20 Last Names") + ylab("Count")
 ```
 
-## Bonus: Team Reg. Season Win % by Playoff Outcome
+# Bonus: Team Reg. Season Win % by Playoff Outcome
 
 This is just because I was curious and wanted to explore more of the data. The endpoint wasn't in the list, but I found it in the API documentation and it had interesting data.
 
@@ -250,14 +512,15 @@ TeamData <- TeamData %>% mutate(Playoff.Series = ifelse(is.na(data.seriesTitle),
 TeamData$Playoff.Series <- factor(TeamData$Playoff.Series, levels = c("No Playoffs", "Stanley Cup Qualifiers", "1st Round", "2nd Round", "Conference Finals", "Stanley Cup Final"))
 #NHL Final and Semifinal occurred only in one season
 RegSeason <- TeamData %>% mutate(Win.Percentage = data.wins / data.gamesPlayed) %>% filter(data.gamesPlayed > 30, data.seasonId >= 20132014)
-Playoffs <- TeamData %>% mutate(Win.Percentage = data.wins / data.gamesPlayed) %>% filter(data.gamesPlayed <= 30)
 
 
 g9 <- ggplot(RegSeason, aes(x = Playoff.Series, y = Win.Percentage, color = Playoff.Series))
 g9 + geom_boxplot(fill = "white", colour = "black") + geom_point(position = "jitter") + labs(title = "Win Percentage by Playoff Outcome, 2014 - Present") + scale_x_discrete(labels = function(Playoff.Series) str_wrap(Playoff.Series, width = 10))
 ```
 
+The Stanley Cup Qualifiers was a round instituted in the unusual 2020 season due to COVID-19, hence only a few observations in that bucket are present.
 
+One very interesting thing about hockey that isn't often seen in other major sports is that teams with losing records frequently make the playoffs. Based on the analysis, they don't often see tremendous success in the postseason, but they sometimes make it.
 
 
 
