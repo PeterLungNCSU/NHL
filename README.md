@@ -293,7 +293,7 @@ them around?
 
 Before we jump into the analysis, let’s do some data investigation. We
 will start with histograms of the variables we are interested in. The
-following is a histogram with all teams included:
+following is the summary statistics by team and a histogram with all teams included:
 
 ``` r
 #Pulling Goalie data and creating a histogram
@@ -2332,6 +2332,8 @@ Winnipeg Jets
 </tbody>
 </table>
 
+Some teams have more of a history of winning than others and some teams have just been around for longer. Let's look at the distribution of win percentage.
+
 ``` r
 g1 <- ggplot(goalie_records, aes(x = Win.Percentage, , y = ..density..))
 g1 + geom_histogram(color = "white", fill = "darkgoldenrod1", bins = 35) + geom_density(color = "blue") + labs(title = "Histogram for Goalie Win Percentage")
@@ -2504,7 +2506,7 @@ most goals scored on a goalie in a single game. It would be unfair to
 judge a player’s career by their worst game, but in the name of data
 analysis, let’s see if there are any relationships there.
 
-Keeping with the 20 game minimum, we’ll start with a histogram:
+Keeping with the 20 game minimum, we’ll start with summary statistics and a histogram:
 
 ``` r
 # Summary statistics for goals scored against
