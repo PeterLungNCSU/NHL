@@ -299,7 +299,6 @@ following is a histogram with all teams included:
 #Pulling Goalie data and creating a histogram
 goalie_records <- nhl("goalie", team = "all") %>% mutate(Win.Percentage = data.wins / data.gamesPlayed)
 
-
 summary <- goalie_records %>% select(data.franchiseName, Win.Percentage, data.gamesPlayed, data.wins, data.losses, data.ties) %>% rename(Team = data.franchiseName) %>% group_by(Team) %>% summarise(Mean = mean(Win.Percentage), Std.Dev = sd(Win.Percentage), Min = min(Win.Percentage), Max = max(Win.Percentage))
 kable(summary, caption = "Summaries Statistics for Goalie Career Win Percentage by Team", digits = 3) %>% kable_styling()
 ```
@@ -2333,11 +2332,12 @@ Winnipeg Jets
 </tbody>
 </table>
 
+``` r
 g1 <- ggplot(goalie_records, aes(x = Win.Percentage, , y = ..density..))
 g1 + geom_histogram(color = "white", fill = "darkgoldenrod1", bins = 35) + geom_density(color = "blue") + labs(title = "Histogram for Goalie Win Percentage")
 ```
 
-![](/README_files/figure-gfm/goalierec1-1.png)<!-- -->
+![](C:\Users\rm915\Desktop\ST558~1\NHL\README~1/figure-gfm/goalierec1-1.png)<!-- -->
 
 There are several players with a win percentage of 0% and a few with
 100%. This is because many of these players have only played in a few
@@ -2354,7 +2354,7 @@ g2 <- ggplot(goalie_records, aes(x = Win.Percentage, , y = ..density..))
 g2 + geom_histogram(color = "white", fill = "darkgoldenrod1", bins = 35) + geom_density(color = "blue") + labs(title = "Histogram for Win Percentage (at least 20 games)")
 ```
 
-![](/README_files/figure-gfm/goalierec2-1.png)<!-- -->
+![](C:\Users\rm915\Desktop\ST558~1\NHL\README~1/figure-gfm/goalierec2-1.png)<!-- -->
 
 So let’s see how that distribution compares to the Toronto Maple Leafs.
 
@@ -2366,7 +2366,7 @@ t2 <- ggplot(tgoalie_records, aes(x = Win.Percentage))
 t2 + geom_histogram(color = "white", fill = "darkgoldenrod", bins = 35) + labs(title = paste0("Histogram for Win Percentage (at least 20 games) - ", team))
 ```
 
-![](/README_files/figure-gfm/tgoalierec2-1.png)<!-- -->
+![](C:\Users\rm915\Desktop\ST558~1\NHL\README~1/figure-gfm/tgoalierec2-1.png)<!-- -->
 
 Now that we have removed players with under 20 games, let’s look at a
 histogram of games played.:
@@ -2378,7 +2378,7 @@ g3 <- ggplot(goalie_records, aes(x = data.gamesPlayed, , y = ..density..))
 g3 + geom_histogram(color = "white", fill = "darkgoldenrod1", bins = 35) + geom_density(color = "blue") + labs(title = "Histogram for Games Played - All Teams") + xlab("Games Played")
 ```
 
-![](/README~1/figure-gfm/goalierec3-1.png)<!-- -->
+![](C:\Users\rm915\Desktop\ST558~1\NHL\README~1/figure-gfm/goalierec3-1.png)<!-- -->
 
 ``` r
 #Team - level games played
@@ -2387,7 +2387,7 @@ t3 <- ggplot(tgoalie_records, aes(x = data.gamesPlayed))
 t3 + geom_histogram(color = "white", fill = "darkgoldenrod", bins = 35) + labs(title = paste0("Histogram for Games Played - ", team)) + xlab("Games Played")
 ```
 
-![](/README_files/figure-gfm/tgoalierec3-1.png)<!-- -->
+![](C:\Users\rm915\Desktop\ST558~1\NHL\README~1/figure-gfm/tgoalierec3-1.png)<!-- -->
 
 ### Scatterplot
 
@@ -2420,7 +2420,7 @@ g4 <- ggplot(goalie_records, aes(x = data.gamesPlayed, y = Win.Percentage, color
 g4 + geom_point() + labs(title = "Goalie Win Percentage by Career Games Played - All Teams") + xlab("Games Played") + ylab("Win Percentage") + scale_color_manual(values=c("grey60", "green3", "firebrick3", "darkorange2"))
 ```
 
-![](/README_files/figure-gfm/goalierec4-1.png)<!-- -->
+![](C:\Users\rm915\Desktop\ST558~1\NHL\README~1/figure-gfm/goalierec4-1.png)<!-- -->
 
 ``` r
 #Print notable goalie names based on data input
@@ -2474,7 +2474,7 @@ t4 <- ggplot(tgoalie_records, aes(x = data.gamesPlayed, y = Win.Percentage, colo
 t4 + geom_point() + labs(title = paste0("Goalie Win Percentage by Career Games Played - ", team)) + xlab("Games Played") + ylab("Win Percentage") + scale_color_manual(values=c("black", "green3", "firebrick3", "darkorange2"))
 ```
 
-![](/README_files/figure-gfm/tgoalierec4-1.png)<!-- -->
+![](C:\Users\rm915\Desktop\ST558~1\NHL\README~1/figure-gfm/tgoalierec4-1.png)<!-- -->
 
 ``` r
 #print notable goalie names based on team input
@@ -2507,12 +2507,674 @@ analysis, let’s see if there are any relationships there.
 Keeping with the 20 game minimum, we’ll start with a histogram:
 
 ``` r
+# Summary statistics for goals scored against
+summary <- goalie_records %>% select(data.franchiseName, data.mostGoalsAgainstOneGame) %>% rename(Team = data.franchiseName) %>% group_by(Team) %>% summarise(Mean = mean(data.mostGoalsAgainstOneGame), Std.Dev = sd(data.mostGoalsAgainstOneGame), Min = min(data.mostGoalsAgainstOneGame), Max = max(data.mostGoalsAgainstOneGame))
+kable(summary, caption = "Summaries Statistics for Goalie Career Win Percentage by Team", digits = 3) %>% kable_styling()
+```
+
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+Summaries Statistics for Goalie Career Win Percentage by Team
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Team
+</th>
+<th style="text-align:right;">
+Mean
+</th>
+<th style="text-align:right;">
+Std.Dev
+</th>
+<th style="text-align:right;">
+Min
+</th>
+<th style="text-align:right;">
+Max
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Anaheim Ducks
+</td>
+<td style="text-align:right;">
+6.071
+</td>
+<td style="text-align:right;">
+0.917
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Arizona Coyotes
+</td>
+<td style="text-align:right;">
+7.458
+</td>
+<td style="text-align:right;">
+2.167
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+15
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Boston Bruins
+</td>
+<td style="text-align:right;">
+7.667
+</td>
+<td style="text-align:right;">
+1.897
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+13
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Brooklyn Americans
+</td>
+<td style="text-align:right;">
+9.000
+</td>
+<td style="text-align:right;">
+1.732
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Buffalo Sabres
+</td>
+<td style="text-align:right;">
+7.053
+</td>
+<td style="text-align:right;">
+1.508
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+11
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Calgary Flames
+</td>
+<td style="text-align:right;">
+6.929
+</td>
+<td style="text-align:right;">
+1.331
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+11
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Carolina Hurricanes
+</td>
+<td style="text-align:right;">
+7.400
+</td>
+<td style="text-align:right;">
+1.708
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+11
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Chicago Blackhawks
+</td>
+<td style="text-align:right;">
+8.188
+</td>
+<td style="text-align:right;">
+2.221
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+12
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Cleveland Barons
+</td>
+<td style="text-align:right;">
+9.200
+</td>
+<td style="text-align:right;">
+1.095
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+11
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Colorado Avalanche
+</td>
+<td style="text-align:right;">
+7.625
+</td>
+<td style="text-align:right;">
+1.740
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+12
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Columbus Blue Jackets
+</td>
+<td style="text-align:right;">
+6.889
+</td>
+<td style="text-align:right;">
+0.928
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Dallas Stars
+</td>
+<td style="text-align:right;">
+7.091
+</td>
+<td style="text-align:right;">
+1.797
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Detroit Red Wings
+</td>
+<td style="text-align:right;">
+7.917
+</td>
+<td style="text-align:right;">
+1.556
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+11
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Edmonton Oilers
+</td>
+<td style="text-align:right;">
+6.833
+</td>
+<td style="text-align:right;">
+1.308
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Florida Panthers
+</td>
+<td style="text-align:right;">
+6.389
+</td>
+<td style="text-align:right;">
+0.850
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Hamilton Tigers
+</td>
+<td style="text-align:right;">
+12.500
+</td>
+<td style="text-align:right;">
+4.950
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+16
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Los Angeles Kings
+</td>
+<td style="text-align:right;">
+7.692
+</td>
+<td style="text-align:right;">
+1.806
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+11
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Minnesota Wild
+</td>
+<td style="text-align:right;">
+6.455
+</td>
+<td style="text-align:right;">
+1.368
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Montréal Canadiens
+</td>
+<td style="text-align:right;">
+7.400
+</td>
+<td style="text-align:right;">
+1.803
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+11
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Montreal Maroons
+</td>
+<td style="text-align:right;">
+7.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Nashville Predators
+</td>
+<td style="text-align:right;">
+6.600
+</td>
+<td style="text-align:right;">
+1.140
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+New Jersey Devils
+</td>
+<td style="text-align:right;">
+8.000
+</td>
+<td style="text-align:right;">
+1.789
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+New York Islanders
+</td>
+<td style="text-align:right;">
+7.000
+</td>
+<td style="text-align:right;">
+1.348
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+11
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+New York Rangers
+</td>
+<td style="text-align:right;">
+8.233
+</td>
+<td style="text-align:right;">
+2.176
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+15
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Ottawa Senators
+</td>
+<td style="text-align:right;">
+6.667
+</td>
+<td style="text-align:right;">
+0.970
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Philadelphia Flyers
+</td>
+<td style="text-align:right;">
+6.870
+</td>
+<td style="text-align:right;">
+1.604
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+11
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Philadelphia Quakers
+</td>
+<td style="text-align:right;">
+8.667
+</td>
+<td style="text-align:right;">
+1.528
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Pittsburgh Penguins
+</td>
+<td style="text-align:right;">
+7.417
+</td>
+<td style="text-align:right;">
+1.976
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+13
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+San Jose Sharks
+</td>
+<td style="text-align:right;">
+7.571
+</td>
+<td style="text-align:right;">
+1.828
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+11
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+St. Louis Blues
+</td>
+<td style="text-align:right;">
+7.273
+</td>
+<td style="text-align:right;">
+1.567
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+St. Louis Eagles
+</td>
+<td style="text-align:right;">
+10.667
+</td>
+<td style="text-align:right;">
+0.577
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+11
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Tampa Bay Lightning
+</td>
+<td style="text-align:right;">
+6.960
+</td>
+<td style="text-align:right;">
+1.485
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Toronto Maple Leafs
+</td>
+<td style="text-align:right;">
+7.692
+</td>
+<td style="text-align:right;">
+1.657
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+12
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Vancouver Canucks
+</td>
+<td style="text-align:right;">
+7.414
+</td>
+<td style="text-align:right;">
+2.079
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+13
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Vegas Golden Knights
+</td>
+<td style="text-align:right;">
+6.667
+</td>
+<td style="text-align:right;">
+0.577
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Washington Capitals
+</td>
+<td style="text-align:right;">
+7.500
+</td>
+<td style="text-align:right;">
+1.439
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+11
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Winnipeg Jets
+</td>
+<td style="text-align:right;">
+6.750
+</td>
+<td style="text-align:right;">
+1.138
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+9
+</td>
+</tr>
+</tbody>
+</table>
+
+``` r
 #Most goals histogram
 g5 <- ggplot(goalie_records, aes(x = data.mostGoalsAgainstOneGame, , y = ..density..))
 g5 + geom_histogram(color = "white", fill = "darkgoldenrod1", bins = 35) + labs(title = "Histogram for Single Game Goals Scored Against - All Teams") + xlab("Most Goals Scored Against in a Single Game")
 ```
 
-![](/README_files/figure-gfm/goalierec5-1.png)<!-- -->
+![](C:\Users\rm915\Desktop\ST558~1\NHL\README~1/figure-gfm/goalierec5-1.png)<!-- -->
 
 It seems that there are very few where the number of goals is over 11 or
 under 5, so let’s create a set of categorical variables that denote most
@@ -3039,7 +3701,7 @@ g6 <- ggplot(scored_against, aes(x = Most.Scored.Against, y = Win.Percentage, co
 g6 + geom_boxplot(fill = "white", colour = "black") + labs(title = "Boxplots of Win Percentage by Most Goals Scored Against") + geom_point(position = "jitter") + geom_smooth(formula = (y ~ x), method = lm, se = FALSE, aes(group=1), color = "black")
 ```
 
-![](/README_files/figure-gfm/goalierec7-1.png)<!-- -->
+![](C:\Users\rm915\Desktop\ST558~1\NHL\README~1/figure-gfm/goalierec7-1.png)<!-- -->
 
 Interestingly, it appears that goalies with larger max number of goals
 scored against them in a game are a little more likely to have lower
@@ -3052,7 +3714,7 @@ t6 <- ggplot(tscored_against, aes(Most.Scored.Against, Win.Percentage))
 t6 + geom_point() + geom_smooth(formula = y ~ x, method = lm, se = FALSE, col = "red", aes(group=1)) + labs(title = paste0("Win Percentage by Most Goals Scored Against - ", team)) + xlab("Career Most Goals Scored Against") + ylab("Win Percentage")
 ```
 
-![](/README_files/figure-gfm/tgoalierec7-1.png)<!-- -->
+![](C:\Users\rm915\Desktop\ST558~1\NHL\README~1/figure-gfm/tgoalierec7-1.png)<!-- -->
 
 ## Player Names
 
@@ -3294,14 +3956,14 @@ g7 <- ggplot(first_names2, aes(x = reorder(First.Name, desc(n))))
 g7 + geom_bar(aes(weight = n), color = "white", fill = "darkolivegreen") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + xlab("Top 20 First Names") + ylab("Count")
 ```
 
-![](/README_files/figure-gfm/names3-1.png)<!-- -->
+![](C:\Users\rm915\Desktop\ST558~1\NHL\README~1/figure-gfm/names3-1.png)<!-- -->
 
 ``` r
 g8 <- ggplot(last_names2, aes(x = reorder(Last.Name, desc(n))))
 g8 + geom_bar(aes(weight = n), color = "white", fill = "darkolivegreen") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + xlab("Top 20 Last Names") + ylab("Count")
 ```
 
-![](/README_files/figure-gfm/names3-2.png)<!-- -->
+![](C:\Users\rm915\Desktop\ST558~1\NHL\README~1/figure-gfm/names3-2.png)<!-- -->
 
 # Bonus: Team Reg. Season Win % by Playoff Outcome
 
@@ -3337,7 +3999,7 @@ g9 <- ggplot(reg_season, aes(x = Playoff.Series, y = Win.Percentage, color = Pla
 g9 + geom_boxplot(fill = "white", colour = "black") + geom_point(position = "jitter") + labs(title = "Win Percentage by Playoff Outcome, 2014 - Present") + scale_x_discrete(labels = function(Playoff.Series) str_wrap(Playoff.Series, width = 10))
 ```
 
-![](/README_files/figure-gfm/teamseas-1.png)<!-- -->
+![](C:\Users\rm915\Desktop\ST558~1\NHL\README~1/figure-gfm/teamseas-1.png)<!-- -->
 
 The Stanley Cup Qualifiers was a round instituted in the unusual 2020
 season due to COVID-19, hence only a few observations in that bucket are
