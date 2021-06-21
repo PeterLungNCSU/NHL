@@ -336,7 +336,7 @@ g1 <- ggplot(GoalieRecords, aes(x = Win.Percentage, , y = ..density..))
 g1 + geom_histogram(color = "white", fill = "darkgoldenrod1", bins = 35) + geom_density(color = "blue") + labs(title = "Histogram for Goalie Win Percentage")
 ```
 
-![](C:\Users\rm915\Desktop\ST%20558\NHL\README_files/figure-gfm/goalierec1-1.png)<!-- -->
+![](/README_files/figure-gfm/goalierec1-1.png)<!-- -->
 
 There are several players with a win percentage of 0% and a few with
 100%. This is because many of these players have only played in a few
@@ -353,7 +353,7 @@ g2 <- ggplot(GoalieRecords, aes(x = Win.Percentage, , y = ..density..))
 g2 + geom_histogram(color = "white", fill = "darkgoldenrod1", bins = 35) + geom_density(color = "blue") + labs(title = "Histogram for Win Percentage (at least 20 games)")
 ```
 
-![](C:\Users\rm915\Desktop\ST%20558\NHL\README_files/figure-gfm/goalierec2-1.png)<!-- -->
+![](/README_files/figure-gfm/goalierec2-1.png)<!-- -->
 
 So let’s see how that distribution compares to the Toronto Maple Leafs.
 
@@ -365,7 +365,7 @@ t2 <- ggplot(tGoalieRecords, aes(x = Win.Percentage))
 t2 + geom_histogram(color = "white", fill = "darkgoldenrod", bins = 35) + labs(title = paste0("Histogram for Win Percentage (at least 20 games) - ", team))
 ```
 
-![](C:\Users\rm915\Desktop\ST%20558\NHL\README_files/figure-gfm/tgoalierec2-1.png)<!-- -->
+![](/README_files/figure-gfm/tgoalierec2-1.png)<!-- -->
 
 Now that we have removed players with under 20 games, let’s look at a
 histogram of games played.:
@@ -377,7 +377,7 @@ g3 <- ggplot(GoalieRecords, aes(x = data.gamesPlayed, , y = ..density..))
 g3 + geom_histogram(color = "white", fill = "darkgoldenrod1", bins = 35) + geom_density(color = "blue") + labs(title = "Histogram for Games Played - All Teams") + xlab("Games Played")
 ```
 
-![](C:\Users\rm915\Desktop\ST%20558\NHL\README_files/figure-gfm/goalierec3-1.png)<!-- -->
+![](/README_files/figure-gfm/goalierec3-1.png)<!-- -->
 
 ``` r
 #Team - level games played
@@ -419,7 +419,7 @@ g4 <- ggplot(GoalieRecords, aes(x = data.gamesPlayed, y = Win.Percentage, color 
 g4 + geom_point() + labs(title = "Goalie Win Percentage by Career Games Played - All Teams") + xlab("Games Played") + ylab("Win Percentage") + scale_color_manual(values=c("grey60", "green3", "firebrick3", "darkorange2"))
 ```
 
-![](C:\Users\rm915\Desktop\ST%20558\NHL\README_files/figure-gfm/goalierec4-1.png)<!-- -->
+![](/README_files/figure-gfm/goalierec4-1.png)<!-- -->
 
 ``` r
 #Print notable goalie names based on data input
@@ -473,7 +473,7 @@ t4 <- ggplot(tGoalieRecords, aes(x = data.gamesPlayed, y = Win.Percentage, color
 t4 + geom_point() + labs(title = paste0("Goalie Win Percentage by Career Games Played - ", team)) + xlab("Games Played") + ylab("Win Percentage") + scale_color_manual(values=c("black", "green3", "firebrick3", "darkorange2"))
 ```
 
-![](C:\Users\rm915\Desktop\ST%20558\NHL\README_files/figure-gfm/tgoalierec4-1.png)<!-- -->
+![](/README_files/figure-gfm/tgoalierec4-1.png)<!-- -->
 
 ``` r
 #print notable goalie names based on team input
@@ -1038,7 +1038,7 @@ g6 <- ggplot(ScoredAgainst, aes(x = Most.Scored.Against, y = Win.Percentage, col
 g6 + geom_boxplot(fill = "white", colour = "black") + labs(title = "Boxplots of Win Percentage by Most Goals Scored Against") + geom_point(position = "jitter") + geom_smooth(formula = (y ~ x), method = lm, se = FALSE, aes(group=1), color = "black")
 ```
 
-![](C:\Users\rm915\Desktop\ST%20558\NHL\README_files/figure-gfm/goalierec7-1.png)<!-- -->
+![](/README_files/figure-gfm/goalierec7-1.png)<!-- -->
 
 Interestingly, it appears that goalies with larger max number of goals
 scored against them in a game are a little more likely to have lower
@@ -1051,7 +1051,7 @@ t6 <- ggplot(tScoredAgainst, aes(Most.Scored.Against, Win.Percentage))
 t6 + geom_point() + geom_smooth(formula = y ~ x, method = lm, se = FALSE, col = "red", aes(group=1)) + labs(title = paste0("Win Percentage by Most Goals Scored Against - ", team)) + xlab("Career Most Goals Scored Against") + ylab("Win Percentage")
 ```
 
-![](C:\Users\rm915\Desktop\ST%20558\NHL\README_files/figure-gfm/tgoalierec7-1.png)<!-- -->
+![](/README_files/figure-gfm/tgoalierec7-1.png)<!-- -->
 
 ## Player Names
 
@@ -1297,14 +1297,14 @@ g7 <- ggplot(FirstNames2, aes(x = reorder(First.Name, desc(n))))
 g7 + geom_bar(aes(weight = n), color = "white", fill = "darkolivegreen") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + xlab("Top 20 First Names") + ylab("Count")
 ```
 
-![](C:\Users\rm915\Desktop\ST%20558\NHL\README_files/figure-gfm/names3-1.png)<!-- -->
+![](/README_files/figure-gfm/names3-1.png)<!-- -->
 
 ``` r
 g8 <- ggplot(LastNames2, aes(x = reorder(Last.Name, desc(n))))
 g8 + geom_bar(aes(weight = n), color = "white", fill = "darkolivegreen") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + xlab("Top 20 Last Names") + ylab("Count")
 ```
 
-![](C:\Users\rm915\Desktop\ST%20558\NHL\README_files/figure-gfm/names3-2.png)<!-- -->
+![](/README_files/figure-gfm/names3-2.png)<!-- -->
 
 # Bonus: Team Reg. Season Win % by Playoff Outcome
 
@@ -1340,7 +1340,7 @@ g9 <- ggplot(RegSeason, aes(x = Playoff.Series, y = Win.Percentage, color = Play
 g9 + geom_boxplot(fill = "white", colour = "black") + geom_point(position = "jitter") + labs(title = "Win Percentage by Playoff Outcome, 2014 - Present") + scale_x_discrete(labels = function(Playoff.Series) str_wrap(Playoff.Series, width = 10))
 ```
 
-![](C:\Users\rm915\Desktop\ST%20558\NHL\README_files/figure-gfm/teamseas-1.png)<!-- -->
+![](/README_files/figure-gfm/teamseas-1.png)<!-- -->
 
 The Stanley Cup Qualifiers was a round instituted in the unusual 2020
 season due to COVID-19, hence only a few observations in that bucket are
