@@ -7,9 +7,7 @@ Peter Lung
 -   [Functions for pulling data](#functions-for-pulling-data)
     -   [Records Functions](#records-functions)
     -   [Stats API Table Function](#stats-api-table-function)
--   [NHL Tables](#nhl-tables)
-    -   [Franchises](#franchises)
-    -   [Team Totals](#team-totals)
+    -   [Wrapper](#wrapper)
 -   [NHL Data Analysis](#nhl-data-analysis)
     -   [Goalie Records](#goalie-records)
         -   [Histograms](#histograms)
@@ -61,9 +59,9 @@ team_id <- 5
 base_url <- "https://records.nhl.com/site/api"
 
 # Mapping team IDs to team names
-Teams <- c("Montréal Canadiens", "Montreal Wanderers", "St. Louis Eagles", "Hamilton Tigers", "Toronto Maple Leafs", "Boston Bruins", "Montreal Maroons", "Brooklyn Americans", "Philadelphia Quakers", "New York Rangers", "Chicago Blackhawks", "Detroit Red Wings", "Cleveland Barons", "Los Angeles Kings", "Dallas Stars", "Philadelphia Flyers", "Pittsburgh Penguins", "St. Louis Blues", "Buffalo Sabres", "Vancouver Canucks", "Calgary Flames", "New York Islanders", "New Jersey Devils", "Washington Capitals", "Edmonton Oilers", "Carolina Hurricanes ", "Colorado Avalanche", "Arizona Coyotes", "San Jose Sharks", "Ottawa Senators ", "Tampa Bay Lightning", "Anaheim Ducks", "Florida Panthers", "Nashville Predators", "Winnipeg Jets", "Columbus Blue Jackets", "Minnesota Wild", "Vegas Golden Knights")
-ID <- (1:38)
-TeamMap <- data.frame(Teams, ID)
+teams <- c("Montréal Canadiens", "Montreal Wanderers", "St. Louis Eagles", "Hamilton Tigers", "Toronto Maple Leafs", "Boston Bruins", "Montreal Maroons", "Brooklyn Americans", "Philadelphia Quakers", "New York Rangers", "Chicago Blackhawks", "Detroit Red Wings", "Cleveland Barons", "Los Angeles Kings", "Dallas Stars", "Philadelphia Flyers", "Pittsburgh Penguins", "St. Louis Blues", "Buffalo Sabres", "Vancouver Canucks", "Calgary Flames", "New York Islanders", "New Jersey Devils", "Washington Capitals", "Edmonton Oilers", "Carolina Hurricanes ", "Colorado Avalanche", "Arizona Coyotes", "San Jose Sharks", "Ottawa Senators ", "Tampa Bay Lightning", "Anaheim Ducks", "Florida Panthers", "Nashville Predators", "Winnipeg Jets", "Columbus Blue Jackets", "Minnesota Wild", "Vegas Golden Knights")
+id <- (1:38)
+team_map <- data.frame(teams, id)
 ```
 
 Next, we’ll start by creating the functions. The first one returns a
@@ -110,22 +108,22 @@ season_rec <- function(team = "", team_id) {
       get <- GET(url)
       txt <- content(get, "text", encoding = "UTF-8")
       json <- fromJSON(txt, flatten = TRUE)
-      if (i == 1) {SeasonPull <- as.data.frame(json)} else {SeasonPull <- rbind(SeasonPull, ... = as.data.frame(json))}}}
+      if (i == 1) {season_pull <- as.data.frame(json)} else {season_pull <- rbind(season_pull, ... = as.data.frame(json))}}}
   else if (team == "") {
     url <- paste0(base_url, "/franchise-season-records?cayenneExp=franchiseId=",toString(team_id))
     get <- GET(url)
     txt <- content(get, "text", encoding = "UTF-8")
     json <- fromJSON(txt, flatten = TRUE)
-    SeasonPull <- as.data.frame(json)}
+    season_pull <- as.data.frame(json)}
   else {
-    TeamName <- TeamMap %>% filter(Teams == team)
-    j <- TeamName[1,2]
+    team_name <- team_map %>% filter(teams == team)
+    j <- team_name[1,2]
     url <- paste0(base_url, "/franchise-season-records?cayenneExp=franchiseId=",toString(j))
     get <- GET(url)
     txt <- content(get, "text", encoding = "UTF-8")
     json <- fromJSON(txt, flatten = TRUE)
-    SeasonPull <- as.data.frame(json)}
-  return(SeasonPull)
+    season_pull <- as.data.frame(json)}
+  return(season_pull)
 }
 ```
 
@@ -142,22 +140,22 @@ goalie <- function(team = "", team_id) {
       get <- GET(url)
       txt <- content(get, "text", encoding = "UTF-8")
       json <- fromJSON(txt, flatten = TRUE)
-      if (i == 1) {GoaliePull <- as.data.frame(json)} else {GoaliePull <- rbind(GoaliePull, ... = as.data.frame(json))}}}
+      if (i == 1) {goalie_pull <- as.data.frame(json)} else {goalie_pull <- rbind(goalie_pull, ... = as.data.frame(json))}}}
   else if (team == "") {
     url <- paste0(base_url, "/franchise-goalie-records?cayenneExp=franchiseId=",toString(team_id))
     get <- GET(url)
     txt <- content(get, "text", encoding = "UTF-8")
     json <- fromJSON(txt, flatten = TRUE)
-    GoaliePull <- as.data.frame(json)}
+    goalie_pull <- as.data.frame(json)}
   else {
-    TeamName <- TeamMap %>% filter(Teams == team)
-    j <- TeamName[1,2]
+    team_name <- team_map %>% filter(teams == team)
+    j <- team_name[1,2]
     url <- paste0(base_url, "/franchise-goalie-records?cayenneExp=franchiseId=",toString(j))
     get <- GET(url)
     txt <- content(get, "text", encoding = "UTF-8")
     json <- fromJSON(txt, flatten = TRUE)
-    GoaliePull <- as.data.frame(json)}
-  return(GoaliePull)
+    goalie_pull <- as.data.frame(json)}
+  return(goalie_pull)
 }
 
 #skater records totals function
@@ -168,22 +166,22 @@ skater <- function(team = "", team_id) {
       get <- GET(url)
       txt <- content(get, "text", encoding = "UTF-8")
       json <- fromJSON(txt, flatten = TRUE)
-      if (i == 1) {SkaterPull <- as.data.frame(json)} else {SkaterPull <- rbind(SkaterPull, ... = as.data.frame(json))}}}
+      if (i == 1) {skater_pull <- as.data.frame(json)} else {skater_pull <- rbind(skater_pull, ... = as.data.frame(json))}}}
   else if (team == "") {
     url <- paste0(base_url, "/franchise-skater-records?cayenneExp=franchiseId=",toString(team_id))
     get <- GET(url)
     txt <- content(get, "text", encoding = "UTF-8")
     json <- fromJSON(txt, flatten = TRUE)
-    SkaterPull <- as.data.frame(json)}
+    skater_pull <- as.data.frame(json)}
   else {
-    TeamName <- TeamMap %>% filter(Teams == team)
-    j <- TeamName[1,2]
+    team_name <- team_map %>% filter(teams == team)
+    j <- team_name[1,2]
     url <- paste0(base_url, "/franchise-skater-records?cayenneExp=franchiseId=",toString(j))
     get <- GET(url)
     txt <- content(get, "text", encoding = "UTF-8")
     json <- fromJSON(txt, flatten = TRUE)
-    SkaterPull <- as.data.frame(json)}
-  return(SkaterPull)
+    skater_pull <- as.data.frame(json)}
+  return(skater_pull)
 }
 ```
 
@@ -199,22 +197,22 @@ recent <- function(team = "", team_id) {
       get <- GET(url)
       txt <- content(get, "text", encoding = "UTF-8")
       json <- fromJSON(txt, flatten = TRUE)
-      if (i == 1) {RecentPull <- as.data.frame(json)} else {RecentPull <- rbind(RecentPull, ... = as.data.frame(json))}}}
+      if (i == 1) {recent_pull <- as.data.frame(json)} else {recent_pull <- rbind(recent_pull, ... = as.data.frame(json))}}}
   else if (team == "") {
     url <- paste0(base_url, "/franchise-detail?cayenneExp=mostRecentTeamId=",toString(team_id))
     get <- GET(url)
     txt <- content(get, "text", encoding = "UTF-8")
     json <- fromJSON(txt, flatten = TRUE)
-    RecentPull <- as.data.frame(json)}
+    recent_pull <- as.data.frame(json)}
   else {
-    TeamName <- TeamMap %>% filter(Teams == team)
-    j <- TeamName[1,2]
+    team_name <- team_map %>% filter(teams == team)
+    j <- team_name[1,2]
     url <- paste0(base_url, "/franchise-detail?cayenneExp=mostRecentTeamId=",toString(j))
     get <- GET(url)
     txt <- content(get, "text", encoding = "UTF-8")
     json <- fromJSON(txt, flatten = TRUE)
-    RecentPull <- as.data.frame(json)}
-  return(RecentPull)
+    recent_pull <- as.data.frame(json)}
+  return(recent_pull)
 }
 ```
 
@@ -226,35 +224,37 @@ This function returns a table from the stats API.
 #Stats API data pull function 
 
 # Mapping team IDs to team names (team IDs are different in the Stats API)
-TeamsS <- c("Devils", "Islanders", "Rangers", "Flyers", "Penguins", "Bruins", "Sabres", "Canadiens", "Senators", "Maple Leafs", "Hurricanes", "Panthers", "Lightning", "Capitals", "Blackhawks", "Red Wings", "Predators", "Blues", "Flames", "Avalanche", "Oilers", "Canucks", "Ducks", "Stars", "Kings", "Sharks ", "Blue Jackets", "Wild", "Jets", "Coyotes ", "Golden Knights", "Kraken")
-ID_S <- c((1:10), (12:26), (28:30), (52:55))
-StatsMap <- data.frame(Teams, ID)
+teams_s <- c("Devils", "Islanders", "Rangers", "Flyers", "Penguins", "Bruins", "Sabres", "Canadiens", "Senators", "Maple Leafs", "Hurricanes", "Panthers", "Lightning", "Capitals", "Blackhawks", "Red Wings", "Predators", "Blues", "Flames", "Avalanche", "Oilers", "Canucks", "Ducks", "Stars", "Kings", "Sharks ", "Blue Jackets", "Wild", "Jets", "Coyotes ", "Golden Knights", "Kraken")
+id_s <- c((1:10), (12:26), (28:30), (52:55))
+stats_map <- data.frame(teams_s, id_s)
 
 statsapi <- function(team = "", team_id) {
   if (team == "all") {
-    for (i in ID_S) {
+    for (i in id_s) {
       url <- paste0("https://statsapi.web.nhl.com/api/v1/teams/",toString(i),"?expand=team.stats")
       get <- GET(url)
       txt <- content(get, "text", encoding = "UTF-8")
       json <- fromJSON(txt, flatten = TRUE)
-      if (i == 1) {StatsPull <- as.data.frame(json)} else {StatsPull <- rbind(StatsPull, ... = as.data.frame(json))}}}
+      if (i == 1) {stats_pull <- as.data.frame(json)} else {stats_pull <- rbind(stats_pull, ... = as.data.frame(json))}}}
   else if (team == "") {
     url <- paste0("https://statsapi.web.nhl.com/api/v1/teams/",toString(team_id),"?expand=team.stats")
     get <- GET(url)
     txt <- content(get, "text", encoding = "UTF-8")
     json <- fromJSON(txt, flatten = TRUE)
-    StatsPull <- as.data.frame(json)}
+    stats_pull <- as.data.frame(json)}
   else {
-    TeamName <- StatsMap %>% filter(TeamsS == team)
-    j <- TeamName[1,2]
+    team_name <- stats_map %>% filter(teams_s == team)
+    j <- team_name[1,2]
     url <- paste0(base_url, "https://statsapi.web.nhl.com/api/v1/teams/",toString(j),"?expand=team.stats")
     get <- GET(url)
     txt <- content(get, "text", encoding = "UTF-8")
     json <- fromJSON(txt, flatten = TRUE)
-    StatsPull <- as.data.frame(json)}
-  return(StatsPull)
+    stats_pull <- as.data.frame(json)}
+  return(stats_pull)
 }
 ```
+
+## Wrapper
 
 The above functions return the individual table of interest, but the
 following wrapper function will be the only function needed to pull any
@@ -297,13 +297,13 @@ following is a histogram with all teams included:
 
 ``` r
 #Pulling Goalie data and creating a histogram
-GoalieRecords <- nhl("goalie", team = "all") %>% mutate(Win.Percentage = data.wins / data.gamesPlayed)
+goalie_records <- nhl("goalie", team = "all") %>% mutate(Win.Percentage = data.wins / data.gamesPlayed)
 
-g1 <- ggplot(GoalieRecords, aes(x = Win.Percentage, , y = ..density..))
+g1 <- ggplot(goalie_records, aes(x = Win.Percentage, , y = ..density..))
 g1 + geom_histogram(color = "white", fill = "darkgoldenrod1", bins = 35) + geom_density(color = "blue") + labs(title = "Histogram for Goalie Win Percentage")
 ```
 
-![](/README_files/figure-gfm/goalierec1-1.png)<!-- -->
+![](C:\Users\rm915\Desktop\ST558~1\NHL\README~1/figure-gfm/goalierec1-1.png)<!-- -->
 
 There are several players with a win percentage of 0% and a few with
 100%. This is because many of these players have only played in a few
@@ -314,25 +314,25 @@ players and re-creating the histogram:
 ``` r
 #Updating the data and reprinting the histogram
 
-GoalieRecords <- filter(GoalieRecords, data.gamesPlayed >=20)
+goalie_records <- filter(goalie_records, data.gamesPlayed >=20)
 
-g2 <- ggplot(GoalieRecords, aes(x = Win.Percentage, , y = ..density..))
+g2 <- ggplot(goalie_records, aes(x = Win.Percentage, , y = ..density..))
 g2 + geom_histogram(color = "white", fill = "darkgoldenrod1", bins = 35) + geom_density(color = "blue") + labs(title = "Histogram for Win Percentage (at least 20 games)")
 ```
 
-![](/README_files/figure-gfm/goalierec2-1.png)<!-- -->
+![](C:\Users\rm915\Desktop\ST558~1\NHL\README~1/figure-gfm/goalierec2-1.png)<!-- -->
 
 So let’s see how that distribution compares to the Toronto Maple Leafs.
 
 ``` r
 #Team-level histogram
-tGoalieRecords <- nhl("goalie", team_id = team_id) %>% mutate(Win.Percentage = data.wins / data.gamesPlayed) %>% filter(data.gamesPlayed >=20)
+tgoalie_records <- nhl("goalie", team_id = team_id) %>% mutate(Win.Percentage = data.wins / data.gamesPlayed) %>% filter(data.gamesPlayed >=20)
 
-t2 <- ggplot(tGoalieRecords, aes(x = Win.Percentage))
+t2 <- ggplot(tgoalie_records, aes(x = Win.Percentage))
 t2 + geom_histogram(color = "white", fill = "darkgoldenrod", bins = 35) + labs(title = paste0("Histogram for Win Percentage (at least 20 games) - ", team))
 ```
 
-![](/README_files/figure-gfm/tgoalierec2-1.png)<!-- -->
+![](C:\Users\rm915\Desktop\ST558~1\NHL\README~1/figure-gfm/tgoalierec2-1.png)<!-- -->
 
 Now that we have removed players with under 20 games, let’s look at a
 histogram of games played.:
@@ -340,20 +340,20 @@ histogram of games played.:
 ``` r
 #Games Played Histogram
 
-g3 <- ggplot(GoalieRecords, aes(x = data.gamesPlayed, , y = ..density..))
+g3 <- ggplot(goalie_records, aes(x = data.gamesPlayed, , y = ..density..))
 g3 + geom_histogram(color = "white", fill = "darkgoldenrod1", bins = 35) + geom_density(color = "blue") + labs(title = "Histogram for Games Played - All Teams") + xlab("Games Played")
 ```
 
-![](/README_files/figure-gfm/goalierec3-1.png)<!-- -->
+![](C:\Users\rm915\Desktop\ST558~1\NHL\README~1/figure-gfm/goalierec3-1.png)<!-- -->
 
 ``` r
 #Team - level games played
 
-t3 <- ggplot(tGoalieRecords, aes(x = data.gamesPlayed))
+t3 <- ggplot(tgoalie_records, aes(x = data.gamesPlayed))
 t3 + geom_histogram(color = "white", fill = "darkgoldenrod", bins = 35) + labs(title = paste0("Histogram for Games Played - ", team)) + xlab("Games Played")
 ```
 
-![](C:\Users\rm915\Desktop\ST%20558\NHL\README_files/figure-gfm/tgoalierec3-1.png)<!-- -->
+![](C:\Users\rm915\Desktop\ST558~1\NHL\README~1/figure-gfm/tgoalierec3-1.png)<!-- -->
 
 ### Scatterplot
 
@@ -367,34 +367,34 @@ played.
 
 ``` r
 #Find out who had the most losses
-MostLosses <- max(GoalieRecords$data.losses)
-Loser <- filter(GoalieRecords, data.losses == MostLosses) %>% select(data.firstName, data.lastName, data.gamesPlayed)
+most_losses <- max(goalie_records$data.losses)
+loser <- filter(goalie_records, data.losses == most_losses) %>% select(data.firstName, data.lastName, data.gamesPlayed)
 
-#Lowest winning percentage in over 500 games
-FrustratedPct <- min(filter(GoalieRecords, data.gamesPlayed > 500) %>% select(Win.Percentage))
-Frustrated <- filter(GoalieRecords, data.gamesPlayed > 500) %>% filter(Win.Percentage == min(FrustratedPct))  %>% select(data.firstName, data.lastName, data.gamesPlayed)
+#lowest winning percentage in over 500 games
+frustrated_pct <- min(filter(goalie_records, data.gamesPlayed > 500) %>% select(Win.Percentage))
+frustrated <- filter(goalie_records, data.gamesPlayed > 500) %>% filter(Win.Percentage == min(frustrated_pct))  %>% select(data.firstName, data.lastName, data.gamesPlayed)
 
-# Lowest winning percentage in the sample set (get max games played if there's a tie)
-LowestPct <- min(GoalieRecords$Win.Percentage)
-Lowest <- filter(GoalieRecords, Win.Percentage == LowestPct)  %>% select(data.firstName, data.lastName, data.gamesPlayed) %>% filter(data.gamesPlayed == max(data.gamesPlayed))
+# lowest winning percentage in the sample set (get max games played if there's a tie)
+lowest_pct <- min(goalie_records$Win.Percentage)
+lowest <- filter(goalie_records, Win.Percentage == lowest_pct)  %>% select(data.firstName, data.lastName, data.gamesPlayed) %>% filter(data.gamesPlayed == max(data.gamesPlayed))
 
-GoalieRecords <- mutate(GoalieRecords, Who.Stands.Out = ifelse(Win.Percentage == LowestPct , paste0(data.firstName, " ", data.lastName), ifelse(Win.Percentage == FrustratedPct, paste0(data.firstName, " ", data.lastName), ifelse(data.losses == MostLosses, paste0(data.firstName, " ", data.lastName), "Everybody Else"))))
+goalie_records <- mutate(goalie_records, Who.Stands.Out = ifelse(Win.Percentage == lowest_pct , paste0(data.firstName, " ", data.lastName), ifelse(Win.Percentage == frustrated_pct, paste0(data.firstName, " ", data.lastName), ifelse(data.losses == most_losses, paste0(data.firstName, " ", data.lastName), "Everybody Else"))))
 
 
 
-g4 <- ggplot(GoalieRecords, aes(x = data.gamesPlayed, y = Win.Percentage, color = Who.Stands.Out))
+g4 <- ggplot(goalie_records, aes(x = data.gamesPlayed, y = Win.Percentage, color = Who.Stands.Out))
 g4 + geom_point() + labs(title = "Goalie Win Percentage by Career Games Played - All Teams") + xlab("Games Played") + ylab("Win Percentage") + scale_color_manual(values=c("grey60", "green3", "firebrick3", "darkorange2"))
 ```
 
-![](/README_files/figure-gfm/goalierec4-1.png)<!-- -->
+![](C:\Users\rm915\Desktop\ST558~1\NHL\README~1/figure-gfm/goalierec4-1.png)<!-- -->
 
 ``` r
 #Print notable goalie names based on data input
-BiggestLoser <- paste0("The goalie with the most losses is ", Loser[1,1]," " , Loser[1,2], " with ", toString(MostLosses), ".")
+biggest_loser <- paste0("The goalie with the most losses is ", loser[1,1]," " , loser[1,2], " with ", toString(most_losses), ".")
 
-MostFrustrated <- paste0("The goalie with the lowest win percentage (over 500 games) is ", Frustrated[1,1]," ", Frustrated[1,2], " at ", toString(round(100 * FrustratedPct, 1)),"% in ", toString(Frustrated[1,3]), " games.")
+most_frustrated <- paste0("The goalie with the lowest win percentage (over 500 games) is ", frustrated[1,1]," ", frustrated[1,2], " at ", toString(round(100 * frustrated_pct, 1)),"% in ", toString(frustrated[1,3]), " games.")
 
-LowestRate <- paste0("The goalie with the lowest win percentage in the whole sample is ", Lowest[1,1]," ", Lowest[1,2], " at ", toString(round(LowestPct, 1)), "% in ", toString(Lowest[1,3]), " games.")
+lowest_rate <- paste0("The goalie with the lowest win percentage in the whole sample is ", lowest[1,1]," ", lowest[1,2], " at ", toString(round(lowest_pct, 1)), "% in ", toString(lowest[1,3]), " games.")
 ```
 
 Win percentage is defined as win (not ties) divided by total games.
@@ -421,34 +421,34 @@ Compare with the scatterplot for the Toronto Maple Leafs.
 
 ``` r
 #Find out who had the most losses
-tMostLosses <- max(tGoalieRecords$data.losses)
-tLoser <- filter(tGoalieRecords, data.losses == tMostLosses) %>% select(data.firstName, data.lastName, data.gamesPlayed)  %>% filter(data.gamesPlayed == max(data.gamesPlayed))
+tmost_losses <- max(tgoalie_records$data.losses)
+tloser <- filter(tgoalie_records, data.losses == tmost_losses) %>% select(data.firstName, data.lastName, data.gamesPlayed)  %>% filter(data.gamesPlayed == max(data.gamesPlayed))
 
-#Lowest winning percentage in over 500 games
-tFrustratedPct <- min(filter(tGoalieRecords, data.gamesPlayed > 200) %>% select(Win.Percentage))
-tFrustrated <- filter(tGoalieRecords, data.gamesPlayed > 200) %>% filter(Win.Percentage == min(tFrustratedPct))  %>% select(data.firstName, data.lastName, data.gamesPlayed)  %>% filter(data.gamesPlayed == max(data.gamesPlayed))
+#lowest winning percentage in over 500 games
+tfrustrated_pct <- min(filter(tgoalie_records, data.gamesPlayed > 200) %>% select(Win.Percentage))
+tfrustrated <- filter(tgoalie_records, data.gamesPlayed > 200) %>% filter(Win.Percentage == min(tfrustrated_pct))  %>% select(data.firstName, data.lastName, data.gamesPlayed)  %>% filter(data.gamesPlayed == max(data.gamesPlayed))
 
-# Lowest winning percentage in the sample set (get max games played if there's a tie)
-tLowestPct <- min(tGoalieRecords$Win.Percentage)
-tLowest <- filter(tGoalieRecords, Win.Percentage == tLowestPct)  %>% select(data.firstName, data.lastName, data.gamesPlayed) %>% filter(data.gamesPlayed == max(data.gamesPlayed))
+# lowest winning percentage in the sample set (get max games played if there's a tie)
+tlowest_pct <- min(tgoalie_records$Win.Percentage)
+tlowest <- filter(tgoalie_records, Win.Percentage == tlowest_pct)  %>% select(data.firstName, data.lastName, data.gamesPlayed) %>% filter(data.gamesPlayed == max(data.gamesPlayed))
 
-tGoalieRecords <- mutate(tGoalieRecords, Who.Stands.Out = ifelse(Win.Percentage == tLowestPct , paste0(data.firstName, " ", data.lastName), ifelse(Win.Percentage == tFrustratedPct, paste0(data.firstName, " ", data.lastName), ifelse(data.losses == tMostLosses, paste0(data.firstName, " ", data.lastName), "Everybody Else"))))
-tGoalieRecords$Who.Stands.Out <- factor(tGoalieRecords$Who.Stands.Out, levels = c("Everybody Else", paste0(tLoser[1,1]," " , tLoser[1,2]), paste0(tFrustrated[1,1]," ", tFrustrated[1,2]), paste0(tLowest[1,1]," ", tLowest[1,2])))
+tgoalie_records <- mutate(tgoalie_records, Who.Stands.Out = ifelse(Win.Percentage == tlowest_pct , paste0(data.firstName, " ", data.lastName), ifelse(Win.Percentage == tfrustrated_pct, paste0(data.firstName, " ", data.lastName), ifelse(data.losses == tmost_losses, paste0(data.firstName, " ", data.lastName), "Everybody Else"))))
+tgoalie_records$Who.Stands.Out <- factor(tgoalie_records$Who.Stands.Out, levels = c("Everybody Else", paste0(tloser[1,1]," " , tloser[1,2]), paste0(tfrustrated[1,1]," ", tfrustrated[1,2]), paste0(tlowest[1,1]," ", tlowest[1,2])))
 
 
-t4 <- ggplot(tGoalieRecords, aes(x = data.gamesPlayed, y = Win.Percentage, color = Who.Stands.Out))
+t4 <- ggplot(tgoalie_records, aes(x = data.gamesPlayed, y = Win.Percentage, color = Who.Stands.Out))
 t4 + geom_point() + labs(title = paste0("Goalie Win Percentage by Career Games Played - ", team)) + xlab("Games Played") + ylab("Win Percentage") + scale_color_manual(values=c("black", "green3", "firebrick3", "darkorange2"))
 ```
 
-![](/README_files/figure-gfm/tgoalierec4-1.png)<!-- -->
+![](C:\Users\rm915\Desktop\ST558~1\NHL\README~1/figure-gfm/tgoalierec4-1.png)<!-- -->
 
 ``` r
 #print notable goalie names based on team input
-tBiggestLoser <- paste0("The goalie with the most losses for ", team, " is ", tLoser[1,1]," " , tLoser[1,2], " with ", toString(tMostLosses), ".")
+tbiggest_loser <- paste0("The goalie with the most losses for ", team, " is ", tloser[1,1]," " , tloser[1,2], " with ", toString(tmost_losses), ".")
 
-tMostFrustrated <- paste0("The goalie with the lowest win percentage for the ", team, " (over 200 games) is ", tFrustrated[1,1]," ", tFrustrated[1,2], " at ", toString(round(100 * tFrustratedPct, 1)),"% in ", toString(tFrustrated[1,3]), " games.")
+tmost_frustrated <- paste0("The goalie with the lowest win percentage for the ", team, " (over 200 games) is ", tfrustrated[1,1]," ", tfrustrated[1,2], " at ", toString(round(100 * tfrustrated_pct, 1)),"% in ", toString(tfrustrated[1,3]), " games.")
 
-tLowestRate <- paste0("The goalie with the lowest win percentage for the ", team, " in the whole sample is ", tLowest[1,1]," ", tLowest[1,2], " at ", toString(round(100 * tLowestPct, 1)), "% in ", toString(tLowest[1,3]), " games.")
+tlowest_rate <- paste0("The goalie with the lowest win percentage for the ", team, " in the whole sample is ", tlowest[1,1]," ", tlowest[1,2], " at ", toString(round(100 * tlowest_pct, 1)), "% in ", toString(tlowest[1,3]), " games.")
 ```
 
 Since some teams don’t have goalies with 500+ games, the parameter is
@@ -474,11 +474,11 @@ Keeping with the 20 game minimum, we’ll start with a histogram:
 
 ``` r
 #Most goals histogram
-g5 <- ggplot(GoalieRecords, aes(x = data.mostGoalsAgainstOneGame, , y = ..density..))
+g5 <- ggplot(goalie_records, aes(x = data.mostGoalsAgainstOneGame, , y = ..density..))
 g5 + geom_histogram(color = "white", fill = "darkgoldenrod1", bins = 35) + labs(title = "Histogram for Single Game Goals Scored Against - All Teams") + xlab("Most Goals Scored Against in a Single Game")
 ```
 
-![](/README_files/figure-gfm/goalierec5-1.png)<!-- -->
+![](C:\Users\rm915\Desktop\ST558~1\NHL\README~1/figure-gfm/goalierec5-1.png)<!-- -->
 
 It seems that there are very few where the number of goals is over 11 or
 under 5, so let’s create a set of categorical variables that denote most
@@ -486,7 +486,7 @@ goals scored against with categories “&lt;=5”, “6”, “7”,…,“10”
 
 ``` r
 #Modify data to make categories
-ScoredAgainst <- mutate(GoalieRecords, Most.Scored.Against = recode(data.mostGoalsAgainstOneGame,
+scored_against <- mutate(goalie_records, Most.Scored.Against = recode(data.mostGoalsAgainstOneGame,
                                                                     "1" = "<6",
                                                                     "2" = "<6",
                                                                     "3" = "<6",
@@ -499,60 +499,60 @@ ScoredAgainst <- mutate(GoalieRecords, Most.Scored.Against = recode(data.mostGoa
                                                                     "10" = "10",
                                                                     .default = "11+"))
 
-ScoredAgainst$Most.Scored.Against <- factor(ScoredAgainst$Most.Scored.Against, levels = c("<6", "6", "7", "8", "9", "10", "11+"))
+scored_against$Most.Scored.Against <- factor(scored_against$Most.Scored.Against, levels = c("<6", "6", "7", "8", "9", "10", "11+"))
 
-df0 <- filter(ScoredAgainst, Most.Scored.Against == "<6")
-Defense <- as.data.frame(t(round(summary(df0$Win.Percentage),3))) %>% rename(Stat = Var2) %>% select(Stat, Freq)  %>% rename("<6" = "Freq")
-df1 <- filter(ScoredAgainst, Most.Scored.Against == "6")
+df0 <- filter(scored_against, Most.Scored.Against == "<6")
+defense <- as.data.frame(t(round(summary(df0$Win.Percentage),3))) %>% rename(Stat = Var2) %>% select(Stat, Freq)  %>% rename("<6" = "Freq")
+df1 <- filter(scored_against, Most.Scored.Against == "6")
 A <- as.data.frame(t(round(summary(df1$Win.Percentage),3) )) %>% rename(Stat = Var2) %>% select(Stat, Freq) %>% rename("6" = "Freq")
-df2 <- filter(ScoredAgainst, Most.Scored.Against == "7")
+df2 <- filter(scored_against, Most.Scored.Against == "7")
 B <- as.data.frame(t(round(summary(df2$Win.Percentage),3))) %>% rename(Stat = Var2) %>% select(Stat, Freq) %>% rename("7" = "Freq")
-df3 <- filter(ScoredAgainst, Most.Scored.Against == "8")
+df3 <- filter(scored_against, Most.Scored.Against == "8")
 C <- as.data.frame(t(round(summary(df3$Win.Percentage),3))) %>% rename(Stat = Var2) %>% select(Stat, Freq) %>% rename("8" = "Freq")
-df4 <- filter(ScoredAgainst, Most.Scored.Against == "9")
+df4 <- filter(scored_against, Most.Scored.Against == "9")
 D <- as.data.frame(t(round(summary(df4$Win.Percentage),3))) %>% rename(Stat = Var2) %>% select(Stat, Freq) %>% rename("9" = "Freq")
-df5 <- filter(ScoredAgainst, Most.Scored.Against == "10")
+df5 <- filter(scored_against, Most.Scored.Against == "10")
 E <- as.data.frame(t(round(summary(df5$Win.Percentage),3))) %>% rename(Stat = Var2) %>% select(Stat, Freq) %>% rename("10" = "Freq")
-df6 <- filter(ScoredAgainst, Most.Scored.Against == "11+")
+df6 <- filter(scored_against, Most.Scored.Against == "11+")
 F <- as.data.frame(t(round(summary(df6$Win.Percentage),3))) %>% rename(Stat = Var2) %>% select(Stat, Freq) %>% rename("11+" = "Freq")
 
-tScoredAgainst <- filter(ScoredAgainst, , data.franchiseName == team)
+tscored_against <- filter(scored_against, , data.franchiseName == team)
 
 #Format data for input into table
 
-tdf0 <- filter(tScoredAgainst, Most.Scored.Against == "<6")
-tDefense <- as.data.frame(t(round(summary(tdf0$Win.Percentage),3))) %>% rename(Stat = Var2) %>% select(Stat, Freq)  %>% rename("<6" = "Freq")
-tdf1 <- filter(tScoredAgainst, Most.Scored.Against == "6")
+tdf0 <- filter(tscored_against, Most.Scored.Against == "<6")
+tdefense <- as.data.frame(t(round(summary(tdf0$Win.Percentage),3))) %>% rename(Stat = Var2) %>% select(Stat, Freq)  %>% rename("<6" = "Freq")
+tdf1 <- filter(tscored_against, Most.Scored.Against == "6")
 tA <- as.data.frame(t(round(summary(tdf1$Win.Percentage),3) )) %>% rename(Stat = Var2) %>% select(Stat, Freq) %>% rename("6" = "Freq")
-tdf2 <- filter(tScoredAgainst, Most.Scored.Against == "7")
+tdf2 <- filter(tscored_against, Most.Scored.Against == "7")
 tB <- as.data.frame(t(round(summary(tdf2$Win.Percentage),3))) %>% rename(Stat = Var2) %>% select(Stat, Freq) %>% rename("7" = "Freq")
-tdf3 <- filter(tScoredAgainst, Most.Scored.Against == "8")
+tdf3 <- filter(tscored_against, Most.Scored.Against == "8")
 tC <- as.data.frame(t(round(summary(tdf3$Win.Percentage),3))) %>% rename(Stat = Var2) %>% select(Stat, Freq) %>% rename("8" = "Freq")
-tdf4 <- filter(tScoredAgainst, Most.Scored.Against == "9")
+tdf4 <- filter(tscored_against, Most.Scored.Against == "9")
 tD <- as.data.frame(t(round(summary(tdf4$Win.Percentage),3))) %>% rename(Stat = Var2) %>% select(Stat, Freq) %>% rename("9" = "Freq")
-tdf5 <- filter(tScoredAgainst, Most.Scored.Against == "10")
+tdf5 <- filter(tscored_against, Most.Scored.Against == "10")
 tE <- as.data.frame(t(round(summary(tdf5$Win.Percentage),3))) %>% rename(Stat = Var2) %>% select(Stat, Freq) %>% rename("10" = "Freq")
-tdf6 <- filter(tScoredAgainst, Most.Scored.Against == "11+")
+tdf6 <- filter(tscored_against, Most.Scored.Against == "11+")
 tF <- as.data.frame(t(round(summary(tdf6$Win.Percentage),3))) %>% rename(Stat = Var2) %>% select(Stat, Freq) %>% rename("11+" = "Freq")
 
 #Combine data
-Defense <- Defense %>% left_join(A, by = "Stat") %>% left_join(B, by = "Stat") %>% left_join(C, by = "Stat") %>% left_join(D, by = "Stat") %>% left_join(E, by = "Stat") %>% left_join(F, by = "Stat")
+defense <- defense %>% left_join(A, by = "Stat") %>% left_join(B, by = "Stat") %>% left_join(C, by = "Stat") %>% left_join(D, by = "Stat") %>% left_join(E, by = "Stat") %>% left_join(F, by = "Stat")
 
-tDefense <- tDefense %>% left_join(tA, by = "Stat") %>% left_join(tB, by = "Stat") %>% left_join(tC, by = "Stat") %>% left_join(tD, by = "Stat") %>% left_join(tE, by = "Stat") %>% left_join(tF, by = "Stat")
+tdefense <- tdefense %>% left_join(tA, by = "Stat") %>% left_join(tB, by = "Stat") %>% left_join(tC, by = "Stat") %>% left_join(tD, by = "Stat") %>% left_join(tE, by = "Stat") %>% left_join(tF, by = "Stat")
 
-Defense <- Defense %>% rename(" " = "Stat")
-tDefense <- tDefense %>% rename(" " = "Stat")
+defense <- defense %>% rename(" " = "Stat")
+tdefense <- tdefense %>% rename(" " = "Stat")
 
 sampsize <- as.data.frame(t(c("n", nrow(df0), nrow(df1), nrow(df2), nrow(df3), nrow(df4), nrow(df5), nrow(df6)))) %>% rename(" " = "V1", "<6" = "V2", "6" = "V3", "7" = "V4", "8" = "V5", "9" = "V6", "10" = "V7", "11+" = "V8")
 
 tsampsize <- as.data.frame(t(c("n", nrow(tdf0), nrow(tdf1), nrow(tdf2), nrow(tdf3), nrow(tdf4), nrow(tdf5), nrow(tdf6)))) %>% rename(" " = "V1", "<6" = "V2", "6" = "V3", "7" = "V4", "8" = "V5", "9" = "V6", "10" = "V7", "11+" = "V8")
 
-Defense <- rbind(Defense, sampsize)
-tDefense <- rbind(tDefense, tsampsize)
+defense <- rbind(defense, sampsize)
+tdefense <- rbind(tdefense, tsampsize)
 
 #Print table
 
-kable(Defense, caption = "Summaries Statistics for Win Percentage by Career 'Most Goals Scored Against' - All Teams", digits = 3) %>% kable_styling()
+kable(defense, caption = "Summaries Statistics for Win Percentage by Career 'Most Goals Scored Against' - All Teams", digits = 3) %>% kable_styling()
 ```
 
 <table class="table" style="margin-left: auto; margin-right: auto;">
@@ -774,7 +774,7 @@ n
 </table>
 
 ``` r
-kable(tDefense, caption = paste0("Summaries Statistics for Win Percentage by Career 'Most Goals Scored Against' - ", team), digits = 3) %>% kable_styling()
+kable(tdefense, caption = paste0("Summaries Statistics for Win Percentage by Career 'Most Goals Scored Against' - ", team), digits = 3) %>% kable_styling()
 ```
 
 <table class="table" style="margin-left: auto; margin-right: auto;">
@@ -1001,11 +1001,11 @@ by each of these categories.
 ``` r
 #Generate boxplots
 
-g6 <- ggplot(ScoredAgainst, aes(x = Most.Scored.Against, y = Win.Percentage, color = Most.Scored.Against))
+g6 <- ggplot(scored_against, aes(x = Most.Scored.Against, y = Win.Percentage, color = Most.Scored.Against))
 g6 + geom_boxplot(fill = "white", colour = "black") + labs(title = "Boxplots of Win Percentage by Most Goals Scored Against") + geom_point(position = "jitter") + geom_smooth(formula = (y ~ x), method = lm, se = FALSE, aes(group=1), color = "black")
 ```
 
-![](/README_files/figure-gfm/goalierec7-1.png)<!-- -->
+![](C:\Users\rm915\Desktop\ST558~1\NHL\README~1/figure-gfm/goalierec7-1.png)<!-- -->
 
 Interestingly, it appears that goalies with larger max number of goals
 scored against them in a game are a little more likely to have lower
@@ -1014,11 +1014,11 @@ Maple Leafs:
 
 ``` r
 #Team - level scatterplot
-t6 <- ggplot(tScoredAgainst, aes(Most.Scored.Against, Win.Percentage))
+t6 <- ggplot(tscored_against, aes(Most.Scored.Against, Win.Percentage))
 t6 + geom_point() + geom_smooth(formula = y ~ x, method = lm, se = FALSE, col = "red", aes(group=1)) + labs(title = paste0("Win Percentage by Most Goals Scored Against - ", team)) + xlab("Career Most Goals Scored Against") + ylab("Win Percentage")
 ```
 
-![](/README_files/figure-gfm/tgoalierec7-1.png)<!-- -->
+![](C:\Users\rm915\Desktop\ST558~1\NHL\README~1/figure-gfm/tgoalierec7-1.png)<!-- -->
 
 ## Player Names
 
@@ -1031,16 +1031,12 @@ players that have played hockey for the Toronto Maple Leafs?
 ``` r
 #Generate player first names table
 
-skaterrec_url <- paste0(base_url, "/franchise-skater-records?cayenneExp=franchiseId=",toString(team_id))
-get_skaterrec <- GET(skaterrec_url)
-txt_skaterrec <- content(get_skaterrec, "text", encoding = "UTF-8")
-json_skaterrec <- fromJSON(txt_skaterrec, flatten = TRUE)
-SkaterPull <- as.data.frame(json_skaterrec)
+skater_pull <- nhl("skater", team = team)
 
-PlayerData <- rbind(select(nhl("goalie", team = team), data.firstName, data.lastName), select(SkaterPull, data.firstName, data.lastName))
+player_data <- rbind(select(nhl("goalie", team = team), data.firstName, data.lastName), select(skater_pull, data.firstName, data.lastName))
 
-FirstNames1 <- count(PlayerData, data.firstName) %>% arrange(desc(n)) %>% head(10) %>% rename(First.Name = data.firstName)
-kable(FirstNames1, caption = "10 Most Common First Names") %>% kable_styling()
+first_names1 <- count(player_data, data.firstName) %>% arrange(desc(n)) %>% head(10) %>% rename(First.Name = data.firstName)
+kable(first_names1, caption = "10 Most Common First Names") %>% kable_styling()
 ```
 
 <table class="table" style="margin-left: auto; margin-right: auto;">
@@ -1147,8 +1143,8 @@ more information about nationality than first names.
 ``` r
 #Generate player last names table
 
-LastNames1 <- count(PlayerData, data.lastName) %>% arrange(desc(n)) %>% head(10) %>% rename(Last.Name =data.lastName)
-kable(LastNames1, caption = "10 Most Common Last Names") %>% kable_styling()
+last_names1 <- count(player_data, data.lastName) %>% arrange(desc(n)) %>% head(10) %>% rename(Last.Name =data.lastName)
+kable(last_names1, caption = "10 Most Common Last Names") %>% kable_styling()
 ```
 
 <table class="table" style="margin-left: auto; margin-right: auto;">
@@ -1256,22 +1252,22 @@ remainder to make the charts visible.
 ``` r
 #Create bar charts
 
-FirstNames2 <- count(PlayerData, data.firstName) %>% arrange(desc(n)) %>% head(20)  %>% rename(First.Name = data.firstName) 
+first_names2 <- count(player_data, data.firstName) %>% arrange(desc(n)) %>% head(20)  %>% rename(First.Name = data.firstName) 
 #%>% mutate(name=factor(name, levels=name))
-LastNames2 <- count(PlayerData, data.lastName) %>% arrange(desc(n)) %>% head(20)  %>% rename(Last.Name =data.lastName)
+last_names2 <- count(player_data, data.lastName) %>% arrange(desc(n)) %>% head(20)  %>% rename(Last.Name =data.lastName)
 
-g7 <- ggplot(FirstNames2, aes(x = reorder(First.Name, desc(n))))
+g7 <- ggplot(first_names2, aes(x = reorder(First.Name, desc(n))))
 g7 + geom_bar(aes(weight = n), color = "white", fill = "darkolivegreen") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + xlab("Top 20 First Names") + ylab("Count")
 ```
 
-![](/README_files/figure-gfm/names3-1.png)<!-- -->
+![](C:\Users\rm915\Desktop\ST558~1\NHL\README~1/figure-gfm/names3-1.png)<!-- -->
 
 ``` r
-g8 <- ggplot(LastNames2, aes(x = reorder(Last.Name, desc(n))))
+g8 <- ggplot(last_names2, aes(x = reorder(Last.Name, desc(n))))
 g8 + geom_bar(aes(weight = n), color = "white", fill = "darkolivegreen") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + xlab("Top 20 Last Names") + ylab("Count")
 ```
 
-![](/README_files/figure-gfm/names3-2.png)<!-- -->
+![](C:\Users\rm915\Desktop\ST558~1\NHL\README~1/figure-gfm/names3-2.png)<!-- -->
 
 # Bonus: Team Reg. Season Win % by Playoff Outcome
 
@@ -1294,20 +1290,20 @@ for (i in 1:38) {
   get_teamseas <- GET(teamseas_url)
   txt_teamseas <- content(get_teamseas, "text", encoding = "UTF-8")
   json_teamseas <- fromJSON(txt_teamseas, flatten = TRUE)
-  if (i == 1) {TeamData <- as.data.frame(json_teamseas)} else {TeamData <- rbind(TeamData, as.data.frame(json_teamseas))}
+  if (i == 1) {team_data <- as.data.frame(json_teamseas)} else {team_data <- rbind(team_data, as.data.frame(json_teamseas))}
 }
-TeamData <- TeamData %>% mutate(Playoff.Series = ifelse(is.na(data.seriesTitle), "No Playoffs", data.seriesTitle))
-TeamData$Playoff.Series <- factor(TeamData$Playoff.Series, levels = c("No Playoffs", "Stanley Cup Qualifiers", "1st Round", "2nd Round", "Conference Finals", "Stanley Cup Final"))
+team_data <- team_data %>% mutate(Playoff.Series = ifelse(is.na(data.seriesTitle), "No Playoffs", data.seriesTitle))
+team_data$Playoff.Series <- factor(team_data$Playoff.Series, levels = c("No Playoffs", "Stanley Cup Qualifiers", "1st Round", "2nd Round", "Conference Finals", "Stanley Cup Final"))
 #NHL Final and Semifinal occurred only in one season
-RegSeason <- TeamData %>% mutate(Win.Percentage = data.wins / data.gamesPlayed) %>% filter(data.gamesPlayed > 30, data.seasonId >= 20132014)
+reg_season <- team_data %>% mutate(Win.Percentage = data.wins / data.gamesPlayed) %>% filter(data.gamesPlayed > 30, data.seasonId >= 20132014)
 
 #Create boxplot
 
-g9 <- ggplot(RegSeason, aes(x = Playoff.Series, y = Win.Percentage, color = Playoff.Series))
+g9 <- ggplot(reg_season, aes(x = Playoff.Series, y = Win.Percentage, color = Playoff.Series))
 g9 + geom_boxplot(fill = "white", colour = "black") + geom_point(position = "jitter") + labs(title = "Win Percentage by Playoff Outcome, 2014 - Present") + scale_x_discrete(labels = function(Playoff.Series) str_wrap(Playoff.Series, width = 10))
 ```
 
-![](/README_files/figure-gfm/teamseas-1.png)<!-- -->
+![](C:\Users\rm915\Desktop\ST558~1\NHL\README~1/figure-gfm/teamseas-1.png)<!-- -->
 
 The Stanley Cup Qualifiers was a round instituted in the unusual 2020
 season due to COVID-19, hence only a few observations in that bucket are
