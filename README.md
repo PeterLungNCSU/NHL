@@ -299,6 +299,2040 @@ following is a histogram with all teams included:
 #Pulling Goalie data and creating a histogram
 goalie_records <- nhl("goalie", team = "all") %>% mutate(Win.Percentage = data.wins / data.gamesPlayed)
 
+
+summary <- goalie_records %>% select(data.franchiseName, Win.Percentage, data.gamesPlayed, data.wins, data.losses, data.ties) %>% rename(Team = data.franchiseName) %>% group_by(Team) %>% summarise(Mean = mean(Win.Percentage), Std.Dev = sd(Win.Percentage), Min = min(Win.Percentage), Max = max(Win.Percentage))
+kable(summary, caption = "Summaries Statistics for Goalie Career Win Percentage by Team", digits = 3) %>% kable_styling()
+```
+
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+Summaries Statistics for Goalie Career Win Percentage by Team
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Team
+</th>
+<th style="text-align:right;">
+Mean
+</th>
+<th style="text-align:right;">
+Std.Dev
+</th>
+<th style="text-align:right;">
+Min
+</th>
+<th style="text-align:right;">
+Max
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Anaheim Ducks
+</td>
+<td style="text-align:right;">
+0.366
+</td>
+<td style="text-align:right;">
+0.237
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Arizona Coyotes
+</td>
+<td style="text-align:right;">
+0.304
+</td>
+<td style="text-align:right;">
+0.178
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.667
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Boston Bruins
+</td>
+<td style="text-align:right;">
+0.383
+</td>
+<td style="text-align:right;">
+0.197
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.875
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Brooklyn Americans
+</td>
+<td style="text-align:right;">
+0.313
+</td>
+<td style="text-align:right;">
+0.283
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Buffalo Sabres
+</td>
+<td style="text-align:right;">
+0.318
+</td>
+<td style="text-align:right;">
+0.161
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.600
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Calgary Flames
+</td>
+<td style="text-align:right;">
+0.377
+</td>
+<td style="text-align:right;">
+0.140
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.667
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Carolina Hurricanes
+</td>
+<td style="text-align:right;">
+0.355
+</td>
+<td style="text-align:right;">
+0.198
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Chicago Blackhawks
+</td>
+<td style="text-align:right;">
+0.353
+</td>
+<td style="text-align:right;">
+0.208
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Cleveland Barons
+</td>
+<td style="text-align:right;">
+0.222
+</td>
+<td style="text-align:right;">
+0.056
+</td>
+<td style="text-align:right;">
+0.143
+</td>
+<td style="text-align:right;">
+0.300
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Colorado Avalanche
+</td>
+<td style="text-align:right;">
+0.373
+</td>
+<td style="text-align:right;">
+0.194
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Columbus Blue Jackets
+</td>
+<td style="text-align:right;">
+0.296
+</td>
+<td style="text-align:right;">
+0.121
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.570
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Dallas Stars
+</td>
+<td style="text-align:right;">
+0.346
+</td>
+<td style="text-align:right;">
+0.177
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.632
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Detroit Red Wings
+</td>
+<td style="text-align:right;">
+0.356
+</td>
+<td style="text-align:right;">
+0.187
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.750
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Edmonton Oilers
+</td>
+<td style="text-align:right;">
+0.337
+</td>
+<td style="text-align:right;">
+0.218
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Florida Panthers
+</td>
+<td style="text-align:right;">
+0.351
+</td>
+<td style="text-align:right;">
+0.199
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Hamilton Tigers
+</td>
+<td style="text-align:right;">
+0.193
+</td>
+<td style="text-align:right;">
+0.222
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.436
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Los Angeles Kings
+</td>
+<td style="text-align:right;">
+0.322
+</td>
+<td style="text-align:right;">
+0.141
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.600
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Minnesota Wild
+</td>
+<td style="text-align:right;">
+0.377
+</td>
+<td style="text-align:right;">
+0.195
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.655
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Montréal Canadiens
+</td>
+<td style="text-align:right;">
+0.383
+</td>
+<td style="text-align:right;">
+0.217
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Montreal Maroons
+</td>
+<td style="text-align:right;">
+0.443
+</td>
+<td style="text-align:right;">
+0.040
+</td>
+<td style="text-align:right;">
+0.376
+</td>
+<td style="text-align:right;">
+0.500
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Montreal Wanderers
+</td>
+<td style="text-align:right;">
+0.250
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+0.250
+</td>
+<td style="text-align:right;">
+0.250
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Nashville Predators
+</td>
+<td style="text-align:right;">
+0.202
+</td>
+<td style="text-align:right;">
+0.235
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.540
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+New Jersey Devils
+</td>
+<td style="text-align:right;">
+0.214
+</td>
+<td style="text-align:right;">
+0.181
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.667
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+New York Islanders
+</td>
+<td style="text-align:right;">
+0.348
+</td>
+<td style="text-align:right;">
+0.129
+</td>
+<td style="text-align:right;">
+0.100
+</td>
+<td style="text-align:right;">
+0.557
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+New York Rangers
+</td>
+<td style="text-align:right;">
+0.308
+</td>
+<td style="text-align:right;">
+0.155
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.579
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Ottawa Senators
+</td>
+<td style="text-align:right;">
+0.298
+</td>
+<td style="text-align:right;">
+0.192
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.651
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Philadelphia Flyers
+</td>
+<td style="text-align:right;">
+0.372
+</td>
+<td style="text-align:right;">
+0.166
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.576
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Philadelphia Quakers
+</td>
+<td style="text-align:right;">
+0.163
+</td>
+<td style="text-align:right;">
+0.185
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.423
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Pittsburgh Penguins
+</td>
+<td style="text-align:right;">
+0.352
+</td>
+<td style="text-align:right;">
+0.215
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+San Jose Sharks
+</td>
+<td style="text-align:right;">
+0.325
+</td>
+<td style="text-align:right;">
+0.205
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.750
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+St. Louis Blues
+</td>
+<td style="text-align:right;">
+0.365
+</td>
+<td style="text-align:right;">
+0.147
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.576
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+St. Louis Eagles
+</td>
+<td style="text-align:right;">
+0.453
+</td>
+<td style="text-align:right;">
+0.165
+</td>
+<td style="text-align:right;">
+0.222
+</td>
+<td style="text-align:right;">
+0.614
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Tampa Bay Lightning
+</td>
+<td style="text-align:right;">
+0.355
+</td>
+<td style="text-align:right;">
+0.166
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.737
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Toronto Maple Leafs
+</td>
+<td style="text-align:right;">
+0.366
+</td>
+<td style="text-align:right;">
+0.163
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.750
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Vancouver Canucks
+</td>
+<td style="text-align:right;">
+0.323
+</td>
+<td style="text-align:right;">
+0.129
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.562
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Vegas Golden Knights
+</td>
+<td style="text-align:right;">
+0.354
+</td>
+<td style="text-align:right;">
+0.315
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.727
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Washington Capitals
+</td>
+<td style="text-align:right;">
+0.422
+</td>
+<td style="text-align:right;">
+0.233
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Winnipeg Jets
+</td>
+<td style="text-align:right;">
+0.355
+</td>
+<td style="text-align:right;">
+0.137
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.546
+</td>
+</tr>
+</tbody>
+</table>
+
+``` r
+summary <- goalie_records %>% select(data.franchiseName, Win.Percentage, data.gamesPlayed, data.wins, data.losses, data.ties) %>% rename(Team = data.franchiseName) %>% group_by(Team) %>% summarise(Mean = mean(data.gamesPlayed), Std.Dev = sd(data.gamesPlayed), Min = min(data.gamesPlayed), Max = max(data.gamesPlayed))
+kable(summary, caption = "Summaries Statistics for Goalie Career Games Played by Team", digits = 3) %>% kable_styling()
+```
+
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+Summaries Statistics for Goalie Career Games Played by Team
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Team
+</th>
+<th style="text-align:right;">
+Mean
+</th>
+<th style="text-align:right;">
+Std.Dev
+</th>
+<th style="text-align:right;">
+Min
+</th>
+<th style="text-align:right;">
+Max
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Anaheim Ducks
+</td>
+<td style="text-align:right;">
+80.538
+</td>
+<td style="text-align:right;">
+137.083
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+447
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Arizona Coyotes
+</td>
+<td style="text-align:right;">
+54.533
+</td>
+<td style="text-align:right;">
+68.228
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+281
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Boston Bruins
+</td>
+<td style="text-align:right;">
+107.843
+</td>
+<td style="text-align:right;">
+148.084
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+560
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Brooklyn Americans
+</td>
+<td style="text-align:right;">
+61.455
+</td>
+<td style="text-align:right;">
+114.462
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+360
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Buffalo Sabres
+</td>
+<td style="text-align:right;">
+86.667
+</td>
+<td style="text-align:right;">
+136.179
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+540
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Calgary Flames
+</td>
+<td style="text-align:right;">
+85.838
+</td>
+<td style="text-align:right;">
+134.933
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+576
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Carolina Hurricanes
+</td>
+<td style="text-align:right;">
+82.395
+</td>
+<td style="text-align:right;">
+124.920
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+668
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Chicago Blackhawks
+</td>
+<td style="text-align:right;">
+100.375
+</td>
+<td style="text-align:right;">
+174.267
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+873
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Cleveland Barons
+</td>
+<td style="text-align:right;">
+111.600
+</td>
+<td style="text-align:right;">
+87.546
+</td>
+<td style="text-align:right;">
+35
+</td>
+<td style="text-align:right;">
+250
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Colorado Avalanche
+</td>
+<td style="text-align:right;">
+75.286
+</td>
+<td style="text-align:right;">
+106.562
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+478
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Columbus Blue Jackets
+</td>
+<td style="text-align:right;">
+82.938
+</td>
+<td style="text-align:right;">
+112.025
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+374
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Dallas Stars
+</td>
+<td style="text-align:right;">
+93.378
+</td>
+<td style="text-align:right;">
+140.580
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+509
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Detroit Red Wings
+</td>
+<td style="text-align:right;">
+106.633
+</td>
+<td style="text-align:right;">
+153.296
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+734
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Edmonton Oilers
+</td>
+<td style="text-align:right;">
+73.977
+</td>
+<td style="text-align:right;">
+110.308
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+449
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Florida Panthers
+</td>
+<td style="text-align:right;">
+75.207
+</td>
+<td style="text-align:right;">
+116.695
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+572
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Hamilton Tigers
+</td>
+<td style="text-align:right;">
+33.333
+</td>
+<td style="text-align:right;">
+39.954
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+78
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Los Angeles Kings
+</td>
+<td style="text-align:right;">
+81.182
+</td>
+<td style="text-align:right;">
+127.103
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+666
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Minnesota Wild
+</td>
+<td style="text-align:right;">
+103.688
+</td>
+<td style="text-align:right;">
+127.549
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+409
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Montréal Canadiens
+</td>
+<td style="text-align:right;">
+120.947
+</td>
+<td style="text-align:right;">
+173.917
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+707
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Montreal Maroons
+</td>
+<td style="text-align:right;">
+101.333
+</td>
+<td style="text-align:right;">
+60.928
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+204
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Montreal Wanderers
+</td>
+<td style="text-align:right;">
+4.000
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Nashville Predators
+</td>
+<td style="text-align:right;">
+134.909
+</td>
+<td style="text-align:right;">
+218.604
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+683
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+New Jersey Devils
+</td>
+<td style="text-align:right;">
+90.500
+</td>
+<td style="text-align:right;">
+238.084
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1259
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+New York Islanders
+</td>
+<td style="text-align:right;">
+99.000
+</td>
+<td style="text-align:right;">
+134.731
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+674
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+New York Rangers
+</td>
+<td style="text-align:right;">
+110.953
+</td>
+<td style="text-align:right;">
+187.969
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+887
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Ottawa Senators
+</td>
+<td style="text-align:right;">
+68.690
+</td>
+<td style="text-align:right;">
+96.266
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+435
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Philadelphia Flyers
+</td>
+<td style="text-align:right;">
+90.147
+</td>
+<td style="text-align:right;">
+117.615
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+489
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Philadelphia Quakers
+</td>
+<td style="text-align:right;">
+60.250
+</td>
+<td style="text-align:right;">
+54.841
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+123
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Pittsburgh Penguins
+</td>
+<td style="text-align:right;">
+87.684
+</td>
+<td style="text-align:right;">
+138.899
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+691
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+San Jose Sharks
+</td>
+<td style="text-align:right;">
+105.350
+</td>
+<td style="text-align:right;">
+142.510
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+563
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+St. Louis Blues
+</td>
+<td style="text-align:right;">
+94.905
+</td>
+<td style="text-align:right;">
+85.217
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+347
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+St. Louis Eagles
+</td>
+<td style="text-align:right;">
+136.000
+</td>
+<td style="text-align:right;">
+123.180
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+294
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Tampa Bay Lightning
+</td>
+<td style="text-align:right;">
+63.971
+</td>
+<td style="text-align:right;">
+69.425
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+302
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Toronto Maple Leafs
+</td>
+<td style="text-align:right;">
+94.056
+</td>
+<td style="text-align:right;">
+120.003
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+629
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Vancouver Canucks
+</td>
+<td style="text-align:right;">
+89.400
+</td>
+<td style="text-align:right;">
+119.187
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+516
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Vegas Golden Knights
+</td>
+<td style="text-align:right;">
+37.875
+</td>
+<td style="text-align:right;">
+65.649
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+192
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Washington Capitals
+</td>
+<td style="text-align:right;">
+100.516
+</td>
+<td style="text-align:right;">
+146.913
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+711
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Winnipeg Jets
+</td>
+<td style="text-align:right;">
+76.471
+</td>
+<td style="text-align:right;">
+83.887
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+315
+</td>
+</tr>
+</tbody>
+</table>
+
+``` r
+summary <- goalie_records %>% select(data.franchiseName, Win.Percentage, data.gamesPlayed, data.wins, data.losses, data.ties) %>% rename(Team = data.franchiseName) %>% group_by(Team) %>% summarise(Mean = mean(data.wins), Std.Dev = sd(data.wins), Min = min(data.wins), Max = max(data.wins))
+kable(summary, caption = "Summaries Statistics for Goalie Career Wins by Team", digits = 3) %>% kable_styling()
+```
+
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+Summaries Statistics for Goalie Career Wins by Team
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Team
+</th>
+<th style="text-align:right;">
+Mean
+</th>
+<th style="text-align:right;">
+Std.Dev
+</th>
+<th style="text-align:right;">
+Min
+</th>
+<th style="text-align:right;">
+Max
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Anaheim Ducks
+</td>
+<td style="text-align:right;">
+34.000
+</td>
+<td style="text-align:right;">
+61.429
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+206
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Arizona Coyotes
+</td>
+<td style="text-align:right;">
+21.622
+</td>
+<td style="text-align:right;">
+31.248
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+130
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Boston Bruins
+</td>
+<td style="text-align:right;">
+52.804
+</td>
+<td style="text-align:right;">
+77.123
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+306
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Brooklyn Americans
+</td>
+<td style="text-align:right;">
+20.182
+</td>
+<td style="text-align:right;">
+37.440
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+118
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Buffalo Sabres
+</td>
+<td style="text-align:right;">
+37.697
+</td>
+<td style="text-align:right;">
+68.236
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+284
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Calgary Flames
+</td>
+<td style="text-align:right;">
+37.784
+</td>
+<td style="text-align:right;">
+67.291
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+305
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Carolina Hurricanes
+</td>
+<td style="text-align:right;">
+33.132
+</td>
+<td style="text-align:right;">
+57.308
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+318
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Chicago Blackhawks
+</td>
+<td style="text-align:right;">
+42.688
+</td>
+<td style="text-align:right;">
+82.704
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+418
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Cleveland Barons
+</td>
+<td style="text-align:right;">
+26.800
+</td>
+<td style="text-align:right;">
+22.488
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+58
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Colorado Avalanche
+</td>
+<td style="text-align:right;">
+33.314
+</td>
+<td style="text-align:right;">
+55.191
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+262
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Columbus Blue Jackets
+</td>
+<td style="text-align:right;">
+33.438
+</td>
+<td style="text-align:right;">
+56.234
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+213
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Dallas Stars
+</td>
+<td style="text-align:right;">
+41.027
+</td>
+<td style="text-align:right;">
+65.561
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+262
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Detroit Red Wings
+</td>
+<td style="text-align:right;">
+48.408
+</td>
+<td style="text-align:right;">
+76.785
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+350
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Edmonton Oilers
+</td>
+<td style="text-align:right;">
+31.465
+</td>
+<td style="text-align:right;">
+51.835
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+226
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Florida Panthers
+</td>
+<td style="text-align:right;">
+29.103
+</td>
+<td style="text-align:right;">
+47.186
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+230
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Hamilton Tigers
+</td>
+<td style="text-align:right;">
+12.333
+</td>
+<td style="text-align:right;">
+18.824
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+34
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Los Angeles Kings
+</td>
+<td style="text-align:right;">
+32.682
+</td>
+<td style="text-align:right;">
+60.041
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+336
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Minnesota Wild
+</td>
+<td style="text-align:right;">
+46.938
+</td>
+<td style="text-align:right;">
+62.183
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+194
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Montréal Canadiens
+</td>
+<td style="text-align:right;">
+60.526
+</td>
+<td style="text-align:right;">
+94.288
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+360
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Montreal Maroons
+</td>
+<td style="text-align:right;">
+44.167
+</td>
+<td style="text-align:right;">
+27.382
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+92
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Montreal Wanderers
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Nashville Predators
+</td>
+<td style="text-align:right;">
+63.000
+</td>
+<td style="text-align:right;">
+113.346
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+369
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+New Jersey Devils
+</td>
+<td style="text-align:right;">
+38.643
+</td>
+<td style="text-align:right;">
+129.659
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+688
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+New York Islanders
+</td>
+<td style="text-align:right;">
+41.667
+</td>
+<td style="text-align:right;">
+63.513
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+304
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+New York Rangers
+</td>
+<td style="text-align:right;">
+45.814
+</td>
+<td style="text-align:right;">
+87.859
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+459
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Ottawa Senators
+</td>
+<td style="text-align:right;">
+27.966
+</td>
+<td style="text-align:right;">
+46.358
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+202
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Philadelphia Flyers
+</td>
+<td style="text-align:right;">
+41.647
+</td>
+<td style="text-align:right;">
+57.621
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+240
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Philadelphia Quakers
+</td>
+<td style="text-align:right;">
+17.000
+</td>
+<td style="text-align:right;">
+24.138
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+52
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Pittsburgh Penguins
+</td>
+<td style="text-align:right;">
+38.132
+</td>
+<td style="text-align:right;">
+71.132
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+375
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+San Jose Sharks
+</td>
+<td style="text-align:right;">
+46.550
+</td>
+<td style="text-align:right;">
+76.061
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+293
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+St. Louis Blues
+</td>
+<td style="text-align:right;">
+41.548
+</td>
+<td style="text-align:right;">
+42.044
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+151
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+St. Louis Eagles
+</td>
+<td style="text-align:right;">
+64.500
+</td>
+<td style="text-align:right;">
+65.241
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+140
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Tampa Bay Lightning
+</td>
+<td style="text-align:right;">
+26.882
+</td>
+<td style="text-align:right;">
+39.998
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+190
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Toronto Maple Leafs
+</td>
+<td style="text-align:right;">
+40.796
+</td>
+<td style="text-align:right;">
+57.376
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+304
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Vancouver Canucks
+</td>
+<td style="text-align:right;">
+35.275
+</td>
+<td style="text-align:right;">
+54.719
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+252
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Vegas Golden Knights
+</td>
+<td style="text-align:right;">
+21.625
+</td>
+<td style="text-align:right;">
+39.921
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+117
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Washington Capitals
+</td>
+<td style="text-align:right;">
+43.968
+</td>
+<td style="text-align:right;">
+72.110
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+301
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Winnipeg Jets
+</td>
+<td style="text-align:right;">
+31.765
+</td>
+<td style="text-align:right;">
+43.598
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+172
+</td>
+</tr>
+</tbody>
+</table>
+
 g1 <- ggplot(goalie_records, aes(x = Win.Percentage, , y = ..density..))
 g1 + geom_histogram(color = "white", fill = "darkgoldenrod1", bins = 35) + geom_density(color = "blue") + labs(title = "Histogram for Goalie Win Percentage")
 ```
