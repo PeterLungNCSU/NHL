@@ -11,8 +11,6 @@ always_allow_html: yes
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-team <- "Toronto Maple Leafs"
-team_id <- 5
 ```
 
 # Required Libraries
@@ -31,16 +29,21 @@ library(dplyr)
 # Functions for pulling data
 
 The hockey data I will be going over is accessible via the following logic which returns the table of interest, subsetted by the team of interest (if there is one). There are six records tables to choose from as well as one stats table to choose from for pulling the data.
-+ Franchise table: Contains general information on each historical NHL franchise
-+ Team totals table: Contains some basic win/loss information for each franchise
-+ Season records
-+ Goalie records
-+ Skater records
-+ Recent team IDs
+
+* Franchise table: Contains general information on each historical NHL franchise
+* Team totals table: Contains some basic win/loss information for each franchise
+* Season records
+* Goalie records
+* Skater records
+* Recent team IDs
 
 We'll start with the preliminaries: establishing a base url and a mapping for teams to team IDs.
 
 ```{r functions1}
+#Examples for team-level outputs - we can change the team using these global variables and everything below will update
+team <- "Toronto Maple Leafs"
+team_id <- 5
+
 #base url
 base_url <- "https://records.nhl.com/site/api"
 
@@ -51,6 +54,8 @@ TeamMap <- data.frame(Teams, ID)
 ```
 
 Next, we'll start by creating the functions. The first one returns a table that displays a number of facts about each team from history.
+
+## Records Functions
 
 ```{r functions2}
 #franchise function
@@ -195,6 +200,7 @@ recent <- function(team = "", team_id) {
 
 ```
 
+## Stats API Table Function
 
 This function returns a table from the stats API.
 
