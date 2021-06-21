@@ -478,7 +478,7 @@ g5 <- ggplot(GoalieRecords, aes(x = data.mostGoalsAgainstOneGame, , y = ..densit
 g5 + geom_histogram(color = "white", fill = "darkgoldenrod1", bins = 35) + labs(title = "Histogram for Single Game Goals Scored Against - All Teams") + xlab("Most Goals Scored Against in a Single Game")
 ```
 
-![](C:\Users\rm915\Desktop\ST%20558\NHL\README_files/figure-gfm/goalierec5-1.png)<!-- -->
+![](/README_files/figure-gfm/goalierec5-1.png)<!-- -->
 
 It seems that there are very few where the number of goals is over 11 or
 under 5, so let’s create a set of categorical variables that denote most
